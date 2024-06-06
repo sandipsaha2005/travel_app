@@ -6,8 +6,12 @@ import Login from './component/auth/login'
 import Register from './component/auth/register'
 import Home from './component/home/home'
 import NotFound from './component/notfound/index'
-import Footer from './component/layout/footer'
-import Navbar from './component/layout/navbar'
+import Footer from './component/organs/Footer'
+import Navbar from './component/organs/NavBar'
+// import Footer from './component/layout/footer'
+// import Navbar from './component/layout/navbar'
+import Destination from './component/destination/Destination'
+import CreateDestination from './component/destination/CreateDestination'
 import axios from 'axios'
 import { Toaster } from 'react-hot-toast'
 import { ToastContainer, toast } from 'react-toastify';
@@ -33,9 +37,12 @@ function App() {
     <Router>
      <Navbar/>
       <Routes>
+        
         <Route path='/login' element={<Login/>}/>
         <Route path='/register' element={<Register/>}/>
-        <Route path='/home' element={<Home/>}/>
+        <Route path='/' element={<Home/>}/>
+        <Route path='/destinations' element={<Destination/>}/>
+        <Route path='/creat-epost' element={<CreateDestination/>}/>
         {/* <Route path='/application/:id' element={<Home/>}/> */}
         <Route path='*' element={<NotFound/>}/>
       </Routes>

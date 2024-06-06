@@ -1,6 +1,7 @@
 import React, { createContext, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import App from './App.jsx'
+import './index.css'
 
 export const Context=createContext({isAuthorized:false})
 const AppWrapper = ()=> {
@@ -13,7 +14,7 @@ const AppWrapper = ()=> {
   )
 }
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
+  // <React.StrictMode>
     <AppWrapper/>
-  </React.StrictMode>,
+  //{/* </React.StrictMode>, */}
 )

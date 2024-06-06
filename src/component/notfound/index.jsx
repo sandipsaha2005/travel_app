@@ -1,9 +1,10 @@
 import React from 'react'
 
 function NotFound() {
+  
   return (
     <div>
-        not found
+        not foundd
     </div>
   )
 }

@@ -30,7 +30,7 @@ function Navbar() {
         <ul className={!show ? "menu" : "show-menu menu"}>
           <li>
             <Link to={"/"} onClick={() => setShow(false)}>
-              HOME
+              HOMEe
             </Link>
           </li>
           <li>
