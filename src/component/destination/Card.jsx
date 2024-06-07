@@ -21,6 +21,7 @@ import ShareIcon from '@mui/icons-material/Share';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { styled } from '@mui/material/styles';
+import moment from 'moment/moment';
 const ExpandMore = styled((props) => {
     const { expand, ...other } = props;
     return <IconButton {...other} />;
@@ -32,12 +33,14 @@ const ExpandMore = styled((props) => {
     }),
   }));
 
-function CardComp({imageurl}) {
+function CardComp(data) {
     const [expanded, setExpanded] = useState(false);
 
     const handleExpandClick = () => {
       setExpanded(!expanded);
     };
+    const formattedDate = moment(data?.data?.postedOn).format('MMMM Do, YYYY');
+    console.log(formattedDate);
   return (
     <Card sx={{ maxWidth: 345 }}>
     <CardHeader
@@ -52,12 +55,12 @@ function CardComp({imageurl}) {
         </IconButton>
       }
       title="Shrimp and Chorizo Paella"
-      subheader="September 14, 2016"
+      subheader={formattedDate}
     />
     <CardMedia
       component="img"
       height="194"
-      image={imageurl}
+      image={data?.data?.image?.url}
       alt="Paella dish"
     />
     <CardContent>

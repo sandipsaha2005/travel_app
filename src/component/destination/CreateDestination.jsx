@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Context } from "../../main";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { Box, Button, Card, TextField, Grid ,FormControl ,FormHelperText ,MenuItem ,InputLabel } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
@@ -10,6 +10,7 @@ import { ZodError } from "zod";
 import { AssistWalkerTwoTone } from "@mui/icons-material";
 import axios from "axios";
 import Cookies from 'js-cookie';
+import toast from "react-hot-toast";
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
   clipPath: "inset(50%)",
@@ -24,6 +25,7 @@ const VisuallyHiddenInput = styled("input")({
 
 function CreateDestination() {
   const { isAuthorized, user } = useContext(Context);
+  const navigate=useNavigate();
   const [state,setState]=useState({
     title:'',
     titleErr:false,
@@ -45,7 +47,7 @@ function CreateDestination() {
     priceRangeErrMsg:'',
 
   })
-	const [fileForDownload, setFileForDownload] = useState(null);
+	const [image, setimage] = useState(null);
 
   const handelChange = (_event) => {
     setState((_prevState) => ({
@@ -56,7 +58,7 @@ function CreateDestination() {
      }));
   };
   const handleFileChange = (event) => {
-		setFileForDownload(event.target.files[0]);
+		setimage(event.target.files[0]);
 	};
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -90,23 +92,28 @@ function CreateDestination() {
     formData.append('city', state.city);
     formData.append('description', state.description);
     formData.append('priceRange', state.priceRange);
-
-    if (fileForDownload) {
-        formData.append('image', fileForDownload); // Ensure this matches backend field name
+    
+    if (image) {
+        formData.append('image', image); // Ensure this matches backend field name
     }
 
-    const token = Cookies.get('token');
+    // const token = Cookies.get('token');
     try {
-        const res = await axios.post(`${import.meta.env.VITE_API_URL}destination/createPost`, formData, {
+        const  res  = await axios.post(`${import.meta.env.VITE_API_URL}destination/createPost`, formData, {
             withCredentials: true,
             headers: {
-                Authorization: `Bearer ${token}`,
-                'Content-Type': 'multipart/form-data',
+                
+                "Content-Type": "multipart/form-data",
             },
         });
-
-        console.log(res);
-        console.log(token);
+        
+        if(res.status==200){
+          toast.success(res?.data?.message)
+          navigate("/destinations")
+          
+        }
+        
+        
     } catch (error) {
         console.log("something went wrong", error);
     }
@@ -117,6 +124,7 @@ function CreateDestination() {
   if (!isAuthorized) {
     return <Navigate to={"/login"} />;
   }
+
   return (
     <Box sx={{ marginTop: 15, display: "flex", justifyContent: "center" }}>
       <form onSubmit={handleSubmit}>
@@ -215,7 +223,7 @@ function CreateDestination() {
           <Grid item xs={4}>
           <input
 							name='image'
-              // value={fileForDownload}
+              // value={image}
 													type='file'
 													// accept='image/*,application/pdf'
 													onChange={handleFileChange}
