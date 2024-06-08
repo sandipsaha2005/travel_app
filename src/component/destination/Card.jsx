@@ -1,6 +1,6 @@
 import React, { useContext,useState } from 'react'
 import { Context } from '../../main'
-import { Navigate } from 'react-router-dom'
+import { Navigate, useNavigate } from 'react-router-dom'
 import { 
   Box,
   Card ,
@@ -35,12 +35,18 @@ const ExpandMore = styled((props) => {
 
 function CardComp(data) {
     const [expanded, setExpanded] = useState(false);
-
+    const navigate=useNavigate();
     const handleExpandClick = () => {
       setExpanded(!expanded);
     };
     const formattedDate = moment(data?.data?.postedOn).format('MMMM Do, YYYY');
     console.log(formattedDate);
+    const handleNavigate=()=>{
+      console.log(
+        "nav"
+      );
+      navigate(`/location/${data?.data?._id}`)
+    }
   return (
     <Card sx={{ maxWidth: 345 }}>
     <CardHeader
@@ -62,6 +68,7 @@ function CardComp(data) {
       height="194"
       image={data?.data?.image?.url}
       alt="Paella dish"
+      onClick={handleNavigate}
     />
     <CardContent>
       <Typography variant="body2" color="text.secondary">

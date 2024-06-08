@@ -12,6 +12,7 @@ import Navbar from './component/organs/NavBar'
 // import Navbar from './component/layout/navbar'
 import Destination from './component/destination/Destination'
 import CreateDestination from './component/destination/CreateDestination'
+import SingleCard from './component/destination/SingleCard'
 import axios from 'axios'
 import { Toaster } from 'react-hot-toast'
 import { ToastContainer, toast } from 'react-toastify';
@@ -43,6 +44,8 @@ function App() {
         <Route path='/' element={<Home/>}/>
         <Route path='/destinations' element={<Destination/>}/>
         <Route path='/creat-epost' element={<CreateDestination/>}/>
+        <Route path='/location/:id' element={<SingleCard/>}/>
+
         {/* <Route path='/application/:id' element={<Home/>}/> */}
         <Route path='*' element={<NotFound/>}/>
       </Routes>
