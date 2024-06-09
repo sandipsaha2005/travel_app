@@ -40,13 +40,14 @@ function CardComp(data) {
       setExpanded(!expanded);
     };
     const formattedDate = moment(data?.data?.postedOn).format('MMMM Do, YYYY');
-    console.log(formattedDate);
+
     const handleNavigate=()=>{
       console.log(
         "nav"
       );
       navigate(`/location/${data?.data?._id}`)
     }
+    // console.log(data?.data?.images[0]?.url);
   return (
     <Card sx={{ maxWidth: 345 }}>
     <CardHeader
@@ -66,7 +67,7 @@ function CardComp(data) {
     <CardMedia
       component="img"
       height="194"
-      image={data?.data?.image?.url}
+      image={data?.data?.images[0]?.url}
       alt="Paella dish"
       onClick={handleNavigate}
     />
