@@ -11,10 +11,12 @@ import {
   FormHelperText,
   MenuItem,
   InputLabel,
+
 } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import Select from "@mui/material/Select";
+import { LoadingButton } from '@mui/lab';
 import { createDestValidate } from "../../validation/validate";
 import { ZodError } from "zod";
 import { AssistWalkerTwoTone } from "@mui/icons-material";
@@ -36,6 +38,7 @@ const VisuallyHiddenInput = styled("input")({
 function CreateDestination() {
   const { isAuthorized, user } = useContext(Context);
   const navigate = useNavigate();
+  const [loading,setloading]=useState(false)
   const [image1,setImage1]=useState();
   const [state, setState] = useState({
     title: "",
@@ -76,6 +79,7 @@ function CreateDestination() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setloading(true)
     try {
       createDestValidate.parse(state);
     } catch (error) {
@@ -125,6 +129,7 @@ function CreateDestination() {
       );
 
       if (res.status == 200) {
+        setloading(false)
         toast.success(res?.data?.message);
         navigate("/destinations");
       }
@@ -262,9 +267,19 @@ function CreateDestination() {
               xs={12}
               sx={{ display: "flex", justifyContent: "center" }}
             >
-              <Button type="submit" variant="contained">
-                Submit
-              </Button>
+              <LoadingButton
+								//   disabled={formik.isSubmitting}
+								fullWidth
+								sx={{ maxWidth: '150px' }}
+								size='small'
+								type='submit'
+								variant='contained'
+								loading={loading}
+								id='validate'
+							>
+								Submit
+							</LoadingButton>
+             
             </Grid>
           </Grid>
         </Card>
