@@ -22,10 +22,13 @@ function App() {
   useEffect(() => {
    const fetchUser = async()=>{
     try {
-      const res= await axios.get("http://localhost:4000/api-v2/user/getUser", {withCredentials:true})
+      console.log("before api ");
+      const res= await axios.get(`${import.meta.env.VITE_API_URL}user/getUser`, {withCredentials:true})
+
       setUser(res.data.user)
       setIsAuthorized(true)
     } catch (error) {
+      console.log("in catch");
       setIsAuthorized(false)
     }
    }
@@ -45,8 +48,6 @@ function App() {
         <Route path='/destinations' element={<Destination/>}/>
         <Route path='/creat-epost' element={<CreateDestination/>}/>
         <Route path='/location/:id' element={<SingleCard/>}/>
-
-        {/* <Route path='/application/:id' element={<Home/>}/> */}
         <Route path='*' element={<NotFound/>}/>
       </Routes>
       <Footer/>

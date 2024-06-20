@@ -28,9 +28,14 @@ function Destination() {
     const getAllPost= async()=>{
       try {
         const res= await axios.get(`${import.meta.env.VITE_API_URL}destination/getAllPost`, {withCredentials:true})
-        console.log(res?.data?.posts);
+        
         setPosts(res?.data?.posts)
-        setloading(false)
+        if(res?.data?.success){
+          setTimeout(() => {
+            setloading(false);
+          }, 500);
+        }
+         
       } catch (error) {
         console.log(error);
       }

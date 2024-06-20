@@ -11,12 +11,14 @@ import {
   FormHelperText,
   MenuItem,
   InputLabel,
-
+  Typography,
+  Popover,
 } from "@mui/material";
+import Title from "../organs/title";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
 import Select from "@mui/material/Select";
-import { LoadingButton } from '@mui/lab';
+import { LoadingButton } from "@mui/lab";
 import { createDestValidate } from "../../validation/validate";
 import { ZodError } from "zod";
 import { AssistWalkerTwoTone } from "@mui/icons-material";
@@ -38,8 +40,16 @@ const VisuallyHiddenInput = styled("input")({
 function CreateDestination() {
   const { isAuthorized, user } = useContext(Context);
   const navigate = useNavigate();
-  const [loading,setloading]=useState(false)
-  const [image1,setImage1]=useState();
+  const [loading, setloading] = useState(false);
+  const [image1, setImage1] = useState();
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorEl2, setAnchorEl2] = React.useState(null);
+  const [getLoc, setGeoLoc] = useState({
+    lat: null,
+    lng: null,
+  });
+  const [cityNameForLat, setCityNameForlat] = useState("");
+  const [cityNameForLng, setCityNameForlng] = useState("");
   const [state, setState] = useState({
     title: "",
     titleErr: false,
@@ -59,14 +69,21 @@ function CreateDestination() {
     priceRange: "",
     priceRangeErr: false,
     priceRangeErrMsg: "",
+    lat: "",
+    lng: "",
   });
   const [files, setFiles] = useState([]);
 
   const handleFileChange = (event) => {
     const newFiles = Array.from(event.target.files);
-    setFiles(prevFiles => [...prevFiles, ...newFiles]);
+    setFiles((prevFiles) => [...prevFiles, ...newFiles]);
   };
-  
+  const handleCityNameChange = (e) => {
+    setCityNameForlat(e.target.value);
+  };
+  const handleCityNameChange2 = (e) => {
+    setCityNameForlng(e.target.value);
+  };
 
   const handelChange = (_event) => {
     setState((_prevState) => ({
@@ -79,7 +96,7 @@ function CreateDestination() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setloading(true)
+    setloading(true);
     try {
       createDestValidate.parse(state);
     } catch (error) {
@@ -111,7 +128,6 @@ function CreateDestination() {
     formData.append("description", state.description);
     formData.append("priceRange", state.priceRange);
 
-
     files.forEach((file, index) => {
       formData.append(`images`, file);
     });
@@ -129,7 +145,7 @@ function CreateDestination() {
       );
 
       if (res.status == 200) {
-        setloading(false)
+        setloading(false);
         toast.success(res?.data?.message);
         navigate("/destinations");
       }
@@ -138,150 +154,347 @@ function CreateDestination() {
     }
   };
 
+  const getCoordinates = async (cityName) => {
+    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${cityName}&key=AIzaSyAIQLNf9tDJel_w8wdw4mX7ghcI3rcwQeY`;
+
+    try {
+      console.log(cityName);
+      const response = await axios.get(url);
+      console.log(response);
+      if (response.data.status === "OK") {
+        const { lat, lng } = response.data.results[0].geometry.location;
+        return { lat, lng };
+      } else {
+        throw new Error("Unable to fetch coordinates");
+      }
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+  const handleGetLat = async (cityName) => {
+    console.log("hi");
+    console.log(cityNameForLat);
+    let { lat, lng } = await getCoordinates(cityNameForLat);
+    setGeoLoc({
+      lat: lat,
+    });
+    console.log(lat);
+    setState({
+      lat: lat,
+      lng: lng,
+    });
+    setCityNameForlat("");
+    setCityNameForlng("");
+  };
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
+  const id = open ? "simple-popover" : undefined;
+
   if (!isAuthorized) {
     return <Navigate to={"/login"} />;
   }
 
-  console.log(files);
-
   return (
     <Box sx={{ marginTop: 15, display: "flex", justifyContent: "center" }}>
       <form onSubmit={handleSubmit}>
-        <Card
-          sx={{
-            padding: 5,
-            width: "90vw",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Grid container spacing={1}>
-            <Grid item xs={6}>
-              <TextField
-                autoComplete="off"
-                fullWidth
-                label="Title"
-                id="title"
-                name="title"
-                value={state.title}
-                error={state.titleErr}
-                helperText={state.titleErrMsg}
-                onChange={handelChange}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                autoComplete="off"
-                fullWidth
-                label="Category"
-                id="category"
-                name="categroy"
-                value={state.categroy}
-                error={state.categroyErr}
-                helperText={state.categroyErrMsg}
-                onChange={handelChange}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                autoComplete="off"
-                fullWidth
-                label="Country"
-                id="country"
-                name="country"
-                value={state.country}
-                error={state.countryErr}
-                helperText={state.countryErrMsg}
-                onChange={handelChange}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                autoComplete="off"
-                fullWidth
-                label="City"
-                id="city"
-                name="city"
-                value={state.city}
-                error={state.cityErr}
-                helperText={state.cityErrMsg}
-                onChange={handelChange}
-              />
-            </Grid>
-
-            <Grid item xs={12}>
-              <TextField
-                autoComplete="off"
-                fullWidth
-                multiline
-                label="Description"
-                id="description"
-                name="description"
-                value={state.description}
-                error={state.descriptionErr}
-                helperText={state.descriptionErrMsg}
-                onChange={handelChange}
-              />
-            </Grid>
-            <Grid item xs={8}>
-              <FormControl sx={{ minWidth: 200 }}>
-                <InputLabel id="demo-simple-select-helper-label">
-                  Price Range
-                </InputLabel>
-                <Select
-                  labelId="demo-simple-select-helper-label"
-                  id="demo-simple-select-helper"
-                  value={state.priceRange}
-                  name="priceRange"
-                  error={state.priceRangeErr}
-                  helperText={state.priceRangeErrMsg}
-                  label="Price Range"
+        <Title
+          title={"Create Destination"}
+          muiStyle={{ textAlign: "center" }}
+        />
+        <Card>
+          <Typography align="center" sx={{ fontWeight: 600, marginTop: 4 }}>
+            Basic Details
+          </Typography>
+          <Card
+            sx={{
+              padding: 5,
+              width: "85vw",
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <Grid container spacing={1}>
+              <Grid item xs={12}>
+                <TextField
+                  autoComplete="off"
+                  fullWidth
+                  label="Title"
+                  id="title"
+                  name="title"
+                  value={state.title}
+                  error={state.titleErr}
+                  helperText={state.titleErrMsg}
                   onChange={handelChange}
-                >
-                  <MenuItem value="">
-                    <em>None</em>
-                  </MenuItem>
-                  <MenuItem value={"1000 - 10,000"}>1000 - 10,000</MenuItem>
-                  <MenuItem value={"20,000 - 50,000"}>20,000 - 50,000</MenuItem>
-                  <MenuItem value={"50,000 -  100,000"}>
-                    50,000 - 100,000
-                  </MenuItem>
-                </Select>
-                <FormHelperText>{state.priceRangeErrMsg}</FormHelperText>
-              </FormControl>
-            </Grid>
-            <Grid item xs={4}>
-              {Array.from(Array(5)).map((_, index) => (
-                <input
-                  key={index}
-                  name={`image-${index}`}
-                  type="file"
-                  accept="image/png, image/jpeg, image/webp, image/avif"
-                  onChange={(event) => handleFileChange(event, index)}
                 />
-              ))}
+              </Grid>
+
+              <Grid item xs={6}>
+                <TextField
+                  autoComplete="off"
+                  fullWidth
+                  label="Country"
+                  id="country"
+                  name="country"
+                  value={state.country}
+                  error={state.countryErr}
+                  helperText={state.countryErrMsg}
+                  onChange={handelChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  autoComplete="off"
+                  fullWidth
+                  label="City"
+                  id="city"
+                  name="city"
+                  value={state.city}
+                  error={state.cityErr}
+                  helperText={state.cityErrMsg}
+                  onChange={handelChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  autoComplete="off"
+                  fullWidth
+                  label="Latiture"
+                  id="country"
+                  name="country"
+                  value={state.lat}
+                  // error={state.countryErr}
+                  // helperText={state.countryErrMsg}
+                  onChange={handelChange}
+                />
+                <Card sx={{ padding: 1 }}>
+                  <Button
+                    aria-describedby={id}
+                    variant="contained"
+                    onClick={handleClick}
+                  >
+                    Calculate Latitude and Longitude
+                  </Button>
+                  <Popover
+                    id={id}
+                    open={open}
+                    anchorEl={anchorEl}
+                    onClose={handleClose}
+                    anchorOrigin={{
+                      vertical: "bottom",
+                      horizontal: "left",
+                    }}
+                  >
+                    <Typography sx={{ p: 2 }}>Enter the City name</Typography>
+                    <TextField
+                      autoComplete="off"
+                      fullWidth
+                      label="Enter the city name"
+                      id="cityNameForLat"
+                      name="cityNameForLat"
+                      value={cityNameForLat}
+                      // error={city}
+                      // helperText={}
+                      onChange={handleCityNameChange}
+                    />
+                    <Button onClick={handleGetLat}>Submit</Button>
+                    <Typography align="center">{getLoc.lat}</Typography>
+                  </Popover>
+                </Card>
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  autoComplete="off"
+                  fullWidth
+                  label="Longtitude"
+                  id="city"
+                  name="city"
+                  value={state.lng}
+                  // error={state.cityErr}
+                  // helperText={state.cityErrMsg}
+                  onChange={handelChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  autoComplete="off"
+                  fullWidth
+                  label="Category"
+                  id="category"
+                  name="categroy"
+                  value={state.categroy}
+                  error={state.categroyErr}
+                  helperText={state.categroyErrMsg}
+                  onChange={handelChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl sx={{ minWidth: 200 }}>
+                  <InputLabel id="demo-simple-select-helper-label">
+                    Price Range
+                  </InputLabel>
+                  <Select
+                    labelId="demo-simple-select-helper-label"
+                    id="demo-simple-select-helper"
+                    value={state.priceRange}
+                    name="priceRange"
+                    error={state.priceRangeErr}
+                    helperText={state.priceRangeErrMsg}
+                    label="Price Range"
+                    onChange={handelChange}
+                  >
+                    <MenuItem value="">
+                      <em>None</em>
+                    </MenuItem>
+                    <MenuItem value={"1000 - 10,000"}>1000 - 10,000</MenuItem>
+                    <MenuItem value={"20,000 - 50,000"}>
+                      10,000 - 15,000
+                    </MenuItem>
+                    <MenuItem value={"50,000 -  100,000"}>
+                      15,000 - 20,000
+                    </MenuItem>
+                    <MenuItem value={"50,000 -  100,000"}>
+                      20,000 - 25,000
+                    </MenuItem>
+                    <MenuItem value={"50,000 -  100,000"}>
+                      25,000 - 30,000
+                    </MenuItem>
+                    <MenuItem value={"50,000 -  100,000"}>
+                      30,000 - 40,000
+                    </MenuItem>
+                    <MenuItem value={"50,000 -  100,000"}>
+                      40,000 - 55,000
+                    </MenuItem>
+                    <MenuItem value={"50,000 -  100,000"}>
+                      60,000 - 75,000
+                    </MenuItem>
+                    <MenuItem value={"50,000 -  100,000"}>
+                      80,000 - 100,000
+                    </MenuItem>
+                    <MenuItem value={"50,000 -  100,000"}>
+                      100,000 - 150,000
+                    </MenuItem>
+                  </Select>
+                  <FormHelperText>{state.priceRangeErrMsg}</FormHelperText>
+                </FormControl>
+              </Grid>
+              <Grid item xs={12} sx={{ paddingBottom: 2, paddingTop: 2 }}>
+                <Card sx={{ paddingTop: 2, paddingBottom: 2 }}>
+                  <Typography align="center" sx={{ fontWeight: 600 }}>
+                    What To DO
+                  </Typography>
+                </Card>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  autoComplete="off"
+                  fullWidth
+                  label="To Do 1"
+                  id="todo1"
+                  name="todo1"
+                  value={state.categroy}
+                  error={state.categroyErr}
+                  helperText={state.categroyErrMsg}
+                  onChange={handelChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  autoComplete="off"
+                  fullWidth
+                  label="To Do 2"
+                  id="category"
+                  name="categroy"
+                  value={state.categroy}
+                  error={state.categroyErr}
+                  helperText={state.categroyErrMsg}
+                  onChange={handelChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  autoComplete="off"
+                  fullWidth
+                  label="To Do 3"
+                  id="category"
+                  name="categroy"
+                  value={state.categroy}
+                  error={state.categroyErr}
+                  helperText={state.categroyErrMsg}
+                  onChange={handelChange}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  autoComplete="off"
+                  fullWidth
+                  label="To Do 4"
+                  id="category"
+                  name="categroy"
+                  value={state.categroy}
+                  error={state.categroyErr}
+                  helperText={state.categroyErrMsg}
+                  onChange={handelChange}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                
+                <Typography>Description</Typography>
+
+                <textarea
+                  name=""
+                  id=""
+                  value={state.description}
+                  helperText={state.descriptionErrMsg}
+                  style={{
+                    width: "100%",
+                    minHeight: "200px",
+                    border: "1px solid blue",
+                  }}
+                ></textarea>
+              </Grid>
+
+              <Grid item xs={4}>
+                {Array.from(Array(5)).map((_, index) => (
+                  <input
+                    key={index}
+                    name={`image-${index}`}
+                    type="file"
+                    accept="image/png, image/jpeg, image/webp, image/avif"
+                    onChange={(event) => handleFileChange(event, index)}
+                  />
+                ))}
+              </Grid>
+              <Grid
+                item
+                xs={12}
+                sx={{ display: "flex", justifyContent: "center" }}
+              >
+                <LoadingButton
+                  //   disabled={formik.isSubmitting}
+                  fullWidth
+                  sx={{ maxWidth: "150px" }}
+                  size="small"
+                  type="submit"
+                  variant="contained"
+                  loading={loading}
+                  id="validate"
+                >
+                  Submit
+                </LoadingButton>
+              </Grid>
             </Grid>
-            <Grid
-              item
-              xs={12}
-              sx={{ display: "flex", justifyContent: "center" }}
-            >
-              <LoadingButton
-								//   disabled={formik.isSubmitting}
-								fullWidth
-								sx={{ maxWidth: '150px' }}
-								size='small'
-								type='submit'
-								variant='contained'
-								loading={loading}
-								id='validate'
-							>
-								Submit
-							</LoadingButton>
-             
-            </Grid>
-          </Grid>
+          </Card>
         </Card>
       </form>
     </Box>
