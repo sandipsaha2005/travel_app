@@ -43,7 +43,7 @@ function CreateDestination() {
   const [loading, setloading] = useState(false);
   const [image1, setImage1] = useState();
   const [anchorEl, setAnchorEl] = React.useState(null);
-  const [anchorEl2, setAnchorEl2] = React.useState(null);
+  const [loadingGeo, setLoadinGeo] = useState(false);
   const [getLoc, setGeoLoc] = useState({
     lat: null,
     lng: null,
@@ -96,7 +96,7 @@ function CreateDestination() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setloading(true);
+
     try {
       createDestValidate.parse(state);
     } catch (error) {
@@ -133,6 +133,7 @@ function CreateDestination() {
     });
 
     try {
+      setloading(true);
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}destination/createPost`,
         formData,
@@ -173,7 +174,7 @@ function CreateDestination() {
     }
   };
   const handleGetLat = async (cityName) => {
-    console.log("hi");
+    setLoadinGeo(true)
     console.log(cityNameForLat);
     let { lat, lng } = await getCoordinates(cityNameForLat);
     setGeoLoc({
@@ -184,8 +185,10 @@ function CreateDestination() {
       lat: lat,
       lng: lng,
     });
+    setLoadinGeo(false)
     setCityNameForlat("");
     setCityNameForlng("");
+
   };
 
   const handleClick = (event) => {
@@ -211,9 +214,11 @@ function CreateDestination() {
           muiStyle={{ textAlign: "center" }}
         />
         <Card>
+          <Card>
           <Typography align="center" sx={{ fontWeight: 600, marginTop: 4 }}>
             Basic Details
           </Typography>
+          </Card>
           <Card
             sx={{
               padding: 5,
@@ -294,20 +299,37 @@ function CreateDestination() {
                       horizontal: "left",
                     }}
                   >
-                    <Typography sx={{ p: 2 }}>Enter the City name</Typography>
-                    <TextField
-                      autoComplete="off"
-                      fullWidth
-                      label="Enter the city name"
-                      id="cityNameForLat"
-                      name="cityNameForLat"
-                      value={cityNameForLat}
-                      // error={city}
-                      // helperText={}
-                      onChange={handleCityNameChange}
-                    />
-                    <Button onClick={handleGetLat}>Submit</Button>
-                    <Typography align="center">{getLoc.lat}</Typography>
+                    <Card
+                      sx={{
+                        padding: 4,
+                        display: "flex",
+                        flexDirection: "column",
+                        justifyContent: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <TextField
+                        autoComplete="off"
+                        fullWidth
+                        label="Enter the city name"
+                        id="cityNameForLat"
+                        name="cityNameForLat"
+                        value={cityNameForLat}
+                        // error={city}
+                        // helperText={}
+                        onChange={handleCityNameChange}
+                      />
+                      {/* <Button variant="outlined" onClick={handleGetLat}>Submit</Button> */}
+                      <LoadingButton
+                        size="small"
+                        onClick={handleGetLat}
+                        variant="outlined"
+                        loading={loadingGeo}
+                        id="validate"
+                      >
+                        Submit
+                      </LoadingButton>
+                    </Card>
                   </Popover>
                 </Card>
               </Grid>
@@ -446,9 +468,40 @@ function CreateDestination() {
                   onChange={handelChange}
                 />
               </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  autoComplete="off"
+                  fullWidth
+                  label="Neighbourhood highlights"
+                  id="category"
+                  name="categroy"
+                  value={state.categroy}
+                  error={state.categroyErr}
+                  helperText={state.categroyErrMsg}
+                  onChange={handelChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <TextField
+                  autoComplete="off"
+                  fullWidth
+                  label="Guide Name"
+                  id="category"
+                  name="categroy"
+                  value={state.categroy}
+                  error={state.categroyErr}
+                  helperText={state.categroyErrMsg}
+                  onChange={handelChange}
+                />
+              </Grid>
+              <Grid item xs={6}>
+                <input
+                  type="file"
+                  accept="image/png, image/jpeg, image/webp, image/avif"
+                />
+              </Grid>
 
               <Grid item xs={12}>
-                
                 <Typography>Description</Typography>
 
                 <textarea
