@@ -70,10 +70,38 @@ function CreateDestination() {
     priceRangeErr: false,
     priceRangeErrMsg: "",
     lat: "",
+    latErr:false,
+    latErrMsg:'',
     lng: "",
+    lngErr:false,
+    lngErrMsg:'',
+    todo1:'',
+    todo1Err:false,
+    todo1ErrMsg:'',
+    todo2:'',
+    todo2Err:false,
+    todo2ErrMsg:'',
+    todo3:'',
+    todo3Err:false,
+    todo3ErrMsg:'',
+    todo4:'',
+    todo4Err:false,
+    todo4ErrMsg:'',
+    todo5:'',
+    todo5Err:false,
+    todo5ErrMsg:'',
+    neighburHood:'',
+    neighburHoodErr:false,
+    neighburHoodErrMsg:'',
+    guideName:'',
+    guideNameErr:false,
+    guideNameErrMsg:'',
+
+
+
   });
   const [files, setFiles] = useState([]);
-
+  const [guideImage,setGuideImage]=useState();
   const handleFileChange = (event) => {
     const newFiles = Array.from(event.target.files);
     setFiles((prevFiles) => [...prevFiles, ...newFiles]);
@@ -99,6 +127,7 @@ function CreateDestination() {
 
     try {
       createDestValidate.parse(state);
+   
     } catch (error) {
       if (error instanceof ZodError) {
         const errors = error.issues;
@@ -127,6 +156,15 @@ function CreateDestination() {
     formData.append("city", state.city);
     formData.append("description", state.description);
     formData.append("priceRange", state.priceRange);
+    formData.append("todo1", state.todo1);
+    formData.append("todo2", state.todo2);
+    formData.append("todo3", state.todo3);
+    formData.append("todo4", state.todo4);
+    formData.append("neighburHood", state.neighburHood);
+    formData.append("guideName", state.guideName);
+    // formData.append("guideImage", guideImage);
+    formData.append("lat", state.lat);
+    formData.append("lng", state.lng);
 
     files.forEach((file, index) => {
       formData.append(`images`, file);
@@ -152,6 +190,8 @@ function CreateDestination() {
       }
     } catch (error) {
       console.log("something went wrong", error);
+      toast.error("Smething wen wront")
+      setloading(false)
     }
   };
 
@@ -205,6 +245,7 @@ function CreateDestination() {
   if (!isAuthorized) {
     return <Navigate to={"/login"} />;
   }
+
 
   return (
     <Box sx={{ marginTop: 15, display: "flex", justifyContent: "center" }}>
@@ -274,11 +315,11 @@ function CreateDestination() {
                   autoComplete="off"
                   fullWidth
                   label="Latiture"
-                  id="country"
-                  name="country"
+                  id="lat"
+                  name="lat"
                   value={state.lat}
-                  // error={state.countryErr}
-                  // helperText={state.countryErrMsg}
+                  error={state.latErr}
+                  helperText={state.latErrMsg}
                   onChange={handelChange}
                 />
                 <Card sx={{ padding: 1 }}>
@@ -338,11 +379,11 @@ function CreateDestination() {
                   autoComplete="off"
                   fullWidth
                   label="Longtitude"
-                  id="city"
-                  name="city"
+                  id="lng"
+                  name="lng"
                   value={state.lng}
-                  // error={state.cityErr}
-                  // helperText={state.cityErrMsg}
+                  error={state.lngErr}
+                  helperText={state.lngErrMsg}
                   onChange={handelChange}
                 />
               </Grid>
@@ -423,9 +464,9 @@ function CreateDestination() {
                   label="To Do 1"
                   id="todo1"
                   name="todo1"
-                  value={state.categroy}
-                  error={state.categroyErr}
-                  helperText={state.categroyErrMsg}
+                  value={state.todo1}
+                  error={state.todo1Err}
+                  helperText={state.todo1ErrMsg}
                   onChange={handelChange}
                 />
               </Grid>
@@ -435,10 +476,10 @@ function CreateDestination() {
                   fullWidth
                   label="To Do 2"
                   id="category"
-                  name="categroy"
-                  value={state.categroy}
-                  error={state.categroyErr}
-                  helperText={state.categroyErrMsg}
+                  name="todo2"
+                  value={state.todo2}
+                  error={state.todo2Err}
+                  helperText={state.todo2ErrMsg}
                   onChange={handelChange}
                 />
               </Grid>
@@ -447,11 +488,11 @@ function CreateDestination() {
                   autoComplete="off"
                   fullWidth
                   label="To Do 3"
-                  id="category"
-                  name="categroy"
-                  value={state.categroy}
-                  error={state.categroyErr}
-                  helperText={state.categroyErrMsg}
+                  id="todo3"
+                  name="todo3"
+                  value={state.todo3}
+                  error={state.todo3Err}
+                  helperText={state.todo3ErrMsg}
                   onChange={handelChange}
                 />
               </Grid>
@@ -460,11 +501,11 @@ function CreateDestination() {
                   autoComplete="off"
                   fullWidth
                   label="To Do 4"
-                  id="category"
-                  name="categroy"
-                  value={state.categroy}
-                  error={state.categroyErr}
-                  helperText={state.categroyErrMsg}
+                  id="todo4"
+                  name="todo4"
+                  value={state.todo4}
+                  error={state.todo4Err}
+                  helperText={state.todo4ErrMsg}
                   onChange={handelChange}
                 />
               </Grid>
@@ -473,11 +514,11 @@ function CreateDestination() {
                   autoComplete="off"
                   fullWidth
                   label="Neighbourhood highlights"
-                  id="category"
-                  name="categroy"
-                  value={state.categroy}
-                  error={state.categroyErr}
-                  helperText={state.categroyErrMsg}
+                  id="neighburHood"
+                  name="neighburHood"
+                  value={state.neighburHood}
+                  error={state.neighburHoodErr}
+                  helperText={state.neighburHoodErrMsg}
                   onChange={handelChange}
                 />
               </Grid>
@@ -486,29 +527,36 @@ function CreateDestination() {
                   autoComplete="off"
                   fullWidth
                   label="Guide Name"
-                  id="category"
-                  name="categroy"
-                  value={state.categroy}
-                  error={state.categroyErr}
-                  helperText={state.categroyErrMsg}
+                  id="guideName"
+                  name="guideName"
+                  value={state.guideName}
+                  error={state.guideNameErr}
+                  helperText={state.guideNameErrMsg}
                   onChange={handelChange}
                 />
               </Grid>
               <Grid item xs={6}>
+                <Card>
+                  <Typography sx={{paddingBottom:1}}>Guide Image</Typography>
                 <input
-                  type="file"
+                  type="file" 
                   accept="image/png, image/jpeg, image/webp, image/avif"
+                  name="file"
+                  onChange={(event) => handleFileChange(event)}
                 />
+                </Card>
               </Grid>
 
               <Grid item xs={12}>
                 <Typography>Description</Typography>
 
                 <textarea
-                  name=""
-                  id=""
+                  name="description"
+                  id="description"
                   value={state.description}
+                  error={state.descriptionErr}
                   helperText={state.descriptionErrMsg}
+                  onChange={handelChange}
                   style={{
                     width: "100%",
                     minHeight: "200px",
@@ -517,7 +565,7 @@ function CreateDestination() {
                 ></textarea>
               </Grid>
 
-              <Grid item xs={4}>
+              {/* <Grid item xs={4}>
                 {Array.from(Array(5)).map((_, index) => (
                   <input
                     key={index}
@@ -527,7 +575,65 @@ function CreateDestination() {
                     onChange={(event) => handleFileChange(event, index)}
                   />
                 ))}
+              </Grid> */}
+              <Grid item xs={6} sx={{display:'flex',alignItems:'center'}}>
+                <Card>
+                <Typography sx={{paddingBottom:1}}>Image 1  : {' '}</Typography>
+                <input 
+                type="file" 
+                accept="image/png, image/jpeg, image/webp, image/avif"
+                name="file"
+                onChange={(event) => handleFileChange(event)}
+                />
+                </Card>
               </Grid>
+              <Grid item xs={6} sx={{display:'flex',alignItems:'center'}}>
+                <Card>
+                <Typography sx={{paddingBottom:1}}>Image 2  : {' '}</Typography>
+                <input 
+                type="file" 
+                accept="image/png, image/jpeg, image/webp, image/avif"
+                name="file"
+                onChange={(event) => handleFileChange(event)}
+                />
+                </Card>
+              </Grid>
+              <Grid item xs={6} sx={{display:'flex',alignItems:'center'}}>
+                <Card>
+                <Typography sx={{paddingBottom:1}}>Image 3  : {' '}</Typography>
+                <input 
+                type="file" 
+                accept="image/png, image/jpeg, image/webp, image/avif"
+                name="file"
+                onChange={(event) => handleFileChange(event)}
+                />
+                </Card>
+              </Grid>
+              <Grid item xs={6} sx={{display:'flex',alignItems:'center'}}>
+                <Card>
+                <Typography sx={{paddingBottom:1}}>Image 4  : {' '}</Typography>
+                <input 
+                type="file" 
+                accept="image/png, image/jpeg, image/webp, image/avif"
+                name="file"
+                onChange={(event) => handleFileChange(event)}
+                />
+                </Card>
+              </Grid>
+              <Grid item xs={6} sx={{display:'flex',alignItems:'center'}}>
+                <Card>
+                <Typography sx={{paddingBottom:1}}>Image 5  : {' '}</Typography>
+                <input 
+                type="file" 
+                accept="image/png, image/jpeg, image/webp, image/avif"
+                name="file"
+                onChange={(event) => handleFileChange(event)}
+                />
+                </Card>
+              </Grid>
+              
+              
+              
               <Grid
                 item
                 xs={12}

@@ -30,21 +30,12 @@ function SingleCard() {
   const [state, setState] = useState({});
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-  // const [getLoc,setGeoLoc]=useState({
-  //   lat:null,
-  //   lng:null,
-  // })
-  //let latitude ; // replace with your latitude
-  //let longitude ;
-  let latitude = 40.73061; // replace with your latitude
-  let longitude = -73.935242;
-
-
+  let img;
   const getData = async () => {
     try {
-
       const apiUrl = `${import.meta.env.VITE_API_URL}destination/getPost/${id}`;
       const res = await axios.get(apiUrl, { withCredentials: true });
+      img = res?.data?.post.images[0].url;
       setState(res?.data?.post);
     } catch (error) {
       console.error("API call error:", error);
@@ -53,40 +44,9 @@ function SingleCard() {
 
   useEffect(() => {
     getData();
-
-
-    // getCoordinates(state?.city)
   }, [id]);
 
-  const getCoordinates = async (cityName) => {
-
-    const url = `https://maps.googleapis.com/maps/api/geocode/json?address=${cityName}&key=AIzaSyAIQLNf9tDJel_w8wdw4mX7ghcI3rcwQeY`;
-  
-    try {
-      const response = await axios.get(url);
-      console.log(response);
-      if (response.data.status === 'OK') {
-        const { lat, lng } = response.data.results[0].geometry.location;
-        console.log(lat);
-        latitude=lat;
-        longitude=lng;
-        console.log(latitude,longitude);
-        setGeoLoc({
-          lat:lat,
-          lng:lng,
-        })
-
-      } else {
-        throw new Error('Unable to fetch coordinates');
-      }
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  };
-
-
-
+  console.log(img);
   return (
     // <Box
     //   sx={{
@@ -184,7 +144,7 @@ function SingleCard() {
               <Card sx={{ height: "100%" }}>
                 {state?.images?.[0]?.url ? (
                   <img
-                    src={state.images[0].url}
+                    src={state.images[1].url}
                     alt="Destination"
                     style={{
                       height: "100%",
@@ -205,7 +165,7 @@ function SingleCard() {
                   rowHeight={200}
                   gap={5}
                 >
-                  {state?.images?.slice(1).map((image, index) => (
+                  {state?.images?.slice(2, 6).map((image, index) => (
                     <ImageListItem key={index + 1} sx={{ padding: 2 }}>
                       <img src={image.url} loading="lazy" height="200px" />
                     </ImageListItem>
@@ -219,76 +179,121 @@ function SingleCard() {
 
       <Box
         sx={{
-          marginTop: 5,
           display: "flex",
           justifyContent: "center",
         }}
       >
-        <Card sx={{ width: "90vw" }}>
-          <Typography>{state?.title}</Typography>
-          <Typography>{state?.city}</Typography>
+        <Card
+          sx={{
+            width: "90vw",
+            paddingTop: 1,
+            paddingBottom: 2,
+            paddingLeft: 2,
+          }}
+        >
+          <Typography sx={{ fontSize: 19, fontWeight: 600 }}>
+            {state?.city}
+            {" , "}
+            {state?.title}
+          </Typography>
         </Card>
       </Box>
       <Box
         sx={{
-          marginTop: 5,
+          marginTop: 3,
           display: "flex",
           justifyContent: "center",
+          // flexDirection:'column'
         }}
       >
-        <Card sx={{ width: "90vw" }}>
-          <Typography>About this place</Typography>
-          <Typography>{state?.description}</Typography>
-        </Card>
-      </Box>
-      <Box
-        sx={{
-          marginTop: 5,
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Card sx={{ width: "90vw" }}>
-          <Typography>About this place</Typography>
-          <Typography>{state?.description}</Typography>
-        </Card>
-      </Box>
-      <Box
-        sx={{
-          marginTop: 5,
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Card sx={{ width: "90vw" }}>
-          <Typography>About this place</Typography>
-          <Typography>{state?.description}</Typography>
-        </Card>
-      </Box>
-      <Box
-        sx={{
-          marginTop: 5,
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Card sx={{ width: "90vw" }}>
-          <Typography>About this place</Typography>
-          <Typography>{state?.description}</Typography>
-        </Card>
-      </Box>
-      {/* {getLoc
-      ? */}
-        <Card sx={{padding:1,display:'flex',justifyContent:"right"}}>
-        <Map lat={latitude} lng={longitude}/>
-      </Card>
-    {/* //   :
-    //   <></>   */}
-    {/* // } */}
-      
+        <Box
+          sx={{
+            width: "90vw",
 
+            paddingBottom: 2,
+            paddingLeft: 1,
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+        >
+          <Card sx={{ padding: 1.5 }}>
+            <Typography>{state?.todo1}</Typography>
+          </Card>
+          <Card sx={{ padding: 1.5 }}>
+            <Typography>{state?.todo2}</Typography>
+          </Card>
+          <Card sx={{ padding: 1.5 }}>
+            <Typography>{state?.todo3}</Typography>
+          </Card>
+          <Card sx={{ padding: 1.5 }}>
+            <Typography>{state?.todo4}</Typography>
+          </Card>
+        </Box>
+      </Box>
+      <Box
+        sx={{
+          marginTop: 5,
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Card sx={{ width: "90vw" }}>
+          <Typography>About this place</Typography>
+          <Typography>{state?.description}</Typography>
+        </Card>
+      </Box>
+
+      <Box
+        sx={{
+          marginTop: 5,
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Card sx={{ width: "90vw" }}>
+          <Typography>About this place</Typography>
+          <Typography>{state?.description}</Typography>
+        </Card>
+      </Box>
+      <Box
+        sx={{
+          marginTop: 5,
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        <Box sx={{ width: "90vw" }}>
+          <Typography sx={{ fontSize: 18, fontWeight: 600, marginBottom: 1 }}>
+            Meet your Host   - {state.guideName}
+          </Typography>
+          <Card sx={{ height: "50%", minHeight: "200px", width: "40%" }}>
+            {state?.images?.[0]?.url ? (
+              <img
+                src={state.images[0].url}
+                alt="Guide Image"
+                style={{
+                  height: "100%",
+                  width: "100%",
+                  // objectFit: "cover",
+                }}
+              />
+            ) : (
+              <p>No image available</p>
+            )}
+            
+          </Card>
+          
+          
+        </Box>
+      </Box>
+
+      {state.lat && state.lng && (
+        <Card sx={{ padding: 1, display: "flex", justifyContent: "right" }}>
+          <Map lat={state.lat} lng={state.lng} />
+        </Card>
+      )}
     </Box>
-    
   );
 }
 

@@ -67,7 +67,7 @@ function CardComp(data) {
     <CardMedia
       component="img"
       height="194"
-      image={data?.data?.images[0]?.url}
+      image={data?.data?.images[1]?.url}
       alt="Paella dish"
       onClick={handleNavigate}
     />

@@ -28,6 +28,11 @@ export const createDestValidate = z.object({
 	city:z.string().nonempty({message: "Enter City"}),
 	description:z.string().nonempty({message: "Enter Description"}),
 	priceRange:z.string().nonempty({message: "Enter Price Range"}),
-	
+	todo1:z.string().nonempty({message:'Enter the TODO 1'}),
+	todo2:z.string().nonempty({message:'Enter the TODO 2'}),
+	todo3:z.string().nonempty({message:'Enter the TODO 3'}),
+	todo4:z.string().nonempty({message:'Enter the TODO 4'}),
+	neighburHood:z.string().nonempty({message:"Enter Neighbur Hood "}),
+	guideName:z.string().nonempty("Enter the Guide Name")
 })
 
