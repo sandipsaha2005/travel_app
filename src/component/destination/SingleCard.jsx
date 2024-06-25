@@ -6,6 +6,8 @@ import {
   useMediaQuery,
   useTheme,
 } from "@mui/material";
+
+
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
@@ -15,6 +17,7 @@ import ImageListItemBar from "@mui/material/ImageListItemBar";
 import IconButton from "@mui/material/IconButton";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import Map from "../organs/Map";
+import { ThreeDCardDemo } from "../../test";
 
 function srcset(image, width, height, rows = 1, cols = 1) {
   return {
@@ -293,7 +296,11 @@ function SingleCard() {
           <Map lat={state.lat} lng={state.lng} />
         </Card>
       )}
-    </Box>
+      <newPdf/>
+
+    {/* <ThreeDCardDemo/> */}
+    
+  </Box>
   );
 }
 

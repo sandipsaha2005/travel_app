@@ -20,7 +20,7 @@ import  {SplashScreen}  from '../splash-screen'
 import CardComp from './Card'
 import axios from 'axios'
 import { tuple } from 'zod'
-
+import {ThreeDCardDemo} from '../../test'
 function Destination() {
     const { isAuthorized }=useContext(Context)
     const [posts, setPosts]=useState([])
@@ -55,7 +55,8 @@ function Destination() {
   return (
     <Box sx={{marginTop:15, display:'flex',flexWrap:'wrap',gap:2,justifyContent:'space-evenly'}}>
         { posts.map((post,index)=>(
-          <CardComp data={post}/>
+          // <CardComp data={post}/>
+          <ThreeDCardDemo data={post}/>
         ))}
     </Box>
   )

@@ -5,8 +5,18 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      extend: {
+        // Add your custom gradient border here
+        borderWidth: {
+          '10': '10px',
+        },
+        
+      },
+    },
   },
   plugins: [],
+  
 }
+
 

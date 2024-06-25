@@ -8,8 +8,7 @@ import Home from './component/home/home'
 import NotFound from './component/notfound/index'
 import Footer from './component/organs/Footer'
 import Navbar from './component/organs/NavBar'
-// import Footer from './component/layout/footer'
-// import Navbar from './component/layout/navbar'
+import AboutUs from './component/home/AboutUs'
 import Destination from './component/destination/Destination'
 import CreateDestination from './component/destination/CreateDestination'
 import SingleCard from './component/destination/SingleCard'
@@ -46,8 +45,9 @@ function App() {
         <Route path='/register' element={<Register/>}/>
         <Route path='/' element={<Home/>}/>
         <Route path='/destinations' element={<Destination/>}/>
-        <Route path='/creat-epost' element={<CreateDestination/>}/>
+        <Route path='/creat-post' element={<CreateDestination/>}/>
         <Route path='/location/:id' element={<SingleCard/>}/>
+        <Route path='/about-us' element={<AboutUs/>}/>
         <Route path='*' element={<NotFound/>}/>
       </Routes>
       <Footer/>
