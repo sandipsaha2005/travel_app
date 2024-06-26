@@ -36,3 +36,12 @@ export const createDestValidate = z.object({
 	guideName:z.string().nonempty("Enter the Guide Name")
 })
 
+export const createBookingValidate = z.object({
+	name:z.string().nonempty({message:'Enter the Name'}),
+	email:z.string().nonempty({message:'Enter the Email'}),
+	phone:z.string().nonempty({message:'Enter the Phone Number'}),
+	// fromDate:z.date(),
+	// toDate:z.date(),
+	people:z.string().nonempty({message:'Enter the No of People'}),
+})
+

@@ -5,12 +5,12 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
+  Button,
 } from "@mui/material";
 
-
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState ,useContext} from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
 import ImageListItemBar from "@mui/material/ImageListItemBar";
@@ -18,6 +18,7 @@ import IconButton from "@mui/material/IconButton";
 import StarBorderIcon from "@mui/icons-material/StarBorder";
 import Map from "../organs/Map";
 import { ThreeDCardDemo } from "../../test";
+import { Context } from "../../main";
 
 function srcset(image, width, height, rows = 1, cols = 1) {
   return {
@@ -30,8 +31,10 @@ function srcset(image, width, height, rows = 1, cols = 1) {
 
 function SingleCard() {
   const { id } = useParams();
+  const {user}=useContext(Context)
   const [state, setState] = useState({});
   const theme = useTheme();
+  const navigate=useNavigate()
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   let img;
   const getData = async () => {
@@ -49,86 +52,8 @@ function SingleCard() {
     getData();
   }, [id]);
 
-  console.log(img);
+  console.log(state);
   return (
-    // <Box
-    //   sx={{
-    //     marginTop: 15,
-    //     height: "100vh",
-    //   }}
-    // >
-    //   <Box
-    //     sx={{
-    //       display: "flex",
-    //       justifyContent: "center",
-    //       // flexDirection:'column'
-    //     }}
-    //   >
-    //     <Card sx={{ width: "90vw", height: "70vh" }}>
-    //       <Grid
-    //         container
-    //         spacing={2}
-    //         // sx={{ display: "flex", flexWrap: "wrap" }}
-    //       >
-    //         <Grid item xs={4}>
-    //           <Card sx={{height:'100%'}}>
-    //             {state?.images?.[0]?.url ? (
-    //               <img
-    //                 src={state.images[0].url}
-    //                 alt="Destination"
-    //                 height="100%"
-    //                 width="100%"
-    //               />
-    //             ) : (
-    //               <p>No image available</p>
-    //             )}
-    //           </Card>
-    //         </Grid>
-
-    //           {!isMobile && (
-    //         <Grid item xs={8}>
-    //           <ImageList
-    //             sx={{ width: "100%", height: "100%" }}
-    //             cols={2}
-    //             rowHeight={200}
-    //             gap={5}
-    //           >
-    //             {state?.images?.slice(1).map((image, index) => (
-    //               <ImageListItem key={index + 1} sx={{ padding: 2 }}>
-    //                 <img src={image.url} loading="lazy" height="200px" />
-    //               </ImageListItem>
-    //             ))}
-    //           </ImageList>
-    //         </Grid>
-    //       )}
-
-    //       </Grid>
-    //     </Card>
-    //   </Box>
-    //   <Box
-    //     sx={{
-    //       marginTop:5,
-    //       display: "flex",
-    //       justifyContent: "center",
-    //     }}
-    //   >
-    //     <Card sx={{ width: "90vw" }}>
-    //       <Typography>{state?.title}</Typography>
-    //     </Card>
-    //   </Box>
-    //   <Box
-    //     sx={{
-    //       marginTop:5,
-    //       display: "flex",
-    //       justifyContent: "center",
-    //     }}
-    //   >
-    //     <Card sx={{ width: "90vw" }}>
-    //       <Typography>About this place</Typography>
-    //       <Typography>{state?.description}</Typography>
-    //     </Card>
-    //   </Box>
-    // </Box>
     <Box
       sx={{
         marginTop: 15,
@@ -180,28 +105,42 @@ function SingleCard() {
         </Card>
       </Box>
 
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Card
-          sx={{
-            width: "90vw",
-            paddingTop: 1,
-            paddingBottom: 2,
-            paddingLeft: 2,
-          }}
-        >
-          <Typography sx={{ fontSize: 19, fontWeight: 600 }}>
-            {state?.city}
-            {" , "}
-            {state?.title}
-          </Typography>
-        </Card>
-      </Box>
-      <Box
+      <Card sx={{width:'100%',padding:'5%'}}>
+        <Grid container spacing={2}>
+          <Grid item xs={8}>
+            <Card
+              sx={{
+                // width: "90vw",
+                paddingTop: 1,
+                paddingBottom: 2,
+                paddingLeft: 2,
+              }}
+            >
+              <Typography sx={{ fontSize: 19, fontWeight: 600 }}>
+                {state?.city}
+                {" , "}
+                {state?.title}
+              </Typography>
+            </Card>
+          </Grid>
+          {user?.role == 'Job Seeker' && (
+            <Grid item xs={4}>
+            <Card
+              sx={{
+                // width: "90vw",
+                paddingTop: 1,
+                paddingBottom: 2,
+                paddingLeft: 2,
+              }}
+            >
+              <Button variant="outlined" onClick={()=>navigate(`/book/${state?._id}`)}>Book the Place</Button>
+            </Card>
+          </Grid>
+          )}
+          
+        </Grid>
+      
+      {/* <Box
         sx={{
           marginTop: 3,
           display: "flex",
@@ -268,7 +207,7 @@ function SingleCard() {
       >
         <Box sx={{ width: "90vw" }}>
           <Typography sx={{ fontSize: 18, fontWeight: 600, marginBottom: 1 }}>
-            Meet your Host   - {state.guideName}
+            Meet your Host - {state.guideName}
           </Typography>
           <Card sx={{ height: "50%", minHeight: "200px", width: "40%" }}>
             {state?.images?.[0]?.url ? (
@@ -284,23 +223,18 @@ function SingleCard() {
             ) : (
               <p>No image available</p>
             )}
-            
           </Card>
-          
-          
         </Box>
-      </Box>
+      </Box> */}
+
 
       {state.lat && state.lng && (
         <Card sx={{ padding: 1, display: "flex", justifyContent: "right" }}>
           <Map lat={state.lat} lng={state.lng} />
-        </Card>
+         </Card> 
       )}
-      <newPdf/>
-
-    {/* <ThreeDCardDemo/> */}
-    
-  </Box>
+      </Card>
+    </Box>
   );
 }
 

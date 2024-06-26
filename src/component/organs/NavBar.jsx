@@ -180,7 +180,11 @@ const NavBar = () => {
     // <></> }
         
     //     </>
-    <Navbar/>
+    <>
+   {isAuthorized ? <Navbar/> : <></>}
+    
+   </>
+    
     )
 }
 

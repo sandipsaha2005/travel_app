@@ -1,9 +1,12 @@
 
-import React,{useState, useEffect,   Suspense  } from "react";
+import React,{useState, useEffect,   Suspense ,useContext } from "react";
 import { CardBody, CardContainer, CardItem } from "./component/ui/Card";
 import { Navigate, useNavigate } from 'react-router-dom'
 import { motion } from "framer-motion";
+import { Context } from "./main";
 import { LampContainer } from './component/ui/slidingText'
+import toast from 'react-hot-toast'
+import axios from 'axios'
 import { 
   Box,
   Card ,
@@ -20,6 +23,8 @@ import './custom.css'
 
 import {cn} from './utils/cn'
 import { HoveredLink, Menu, MenuItem, ProductItem } from "./component/ui/Navbar"
+
+
 export function ThreeDCardDemo(data) {
   const navigate=useNavigate();
   console.log(data);
@@ -45,7 +50,7 @@ export function ThreeDCardDemo(data) {
         >
           {data?.data?.category}
         </CardItem>
-        <CardItem translateZ="100" className="w-full mt-4">
+        <CardItem translateZ="100" className="w-full mt-4 cursor-pointer" >
           <img
             src={data?.data?.images[1]?.url}
             height={1000}
@@ -60,24 +65,6 @@ export function ThreeDCardDemo(data) {
         <Typography>{data?.data?.country}</Typography>
         </Box>
 
-        {/* <div className="flex justify-between items-center mt-20">
-          <CardItem
-            translateZ={20}
-            // as={Link}
-            href="https://twitter.com/mannupaaji"
-            target="__blank"
-            className="px-4 py-2 rounded-xl text-xs font-normal dark:text-white"
-          >
-            Try now →
-          </CardItem>
-          <CardItem
-            translateZ={20}
-            as="button"
-            className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white text-xs font-bold"
-          >
-            Sign up
-          </CardItem>
-        </div> */}
       </CardBody>
     </CardContainer>
   );
@@ -86,51 +73,37 @@ export function ThreeDCardDemo(data) {
 export function Navbar({ className }) {
   const [active, setActive] = useState(null);
   const navigate=useNavigate();
+  const {isAuthorized,setIsAuthorized,user}= useContext(Context)
+  const handleLogout= async()=>{
+    try {
+        const res=await axios.get(`${import.meta.env.VITE_API_URL}user/logout`,{withCredentials:true})
+        console.log('Logout response:', res)
+        toast.success(res?.data?.message)
+        setIsAuthorized(false)
+        navigate('/login')
+    } catch (error) {
+        console.log(error);
+        toast.error(" something went wrong");
+        
+        setIsAuthorized(true)
+    }
+    
+}
   return (
     <div
       className={cn("fixed top-10 inset-x-0 max-w-2xl mx-auto z-50", className)}
     >
       <Menu setActive={setActive} >
-        <Box className="text-white cursor-pointer" onClick={()=>navigate('/creat-post')}>Home</Box>
+        <Box className="text-white cursor-pointer" onClick={()=>navigate('/')}>Home</Box>
         <Box className="text-white cursor-pointer" onClick={()=>navigate('/destinations')}>Destinatons</Box>
         <Box className="text-white cursor-pointer" onClick={()=>navigate('/about-us')}>About Us</Box>
+        <Box className="text-white cursor-pointer" onClick={()=>navigate('/creat-post')}>Create Destination</Box>
+        <Box className="text-white cursor-pointer" onClick={()=>navigate('/bookings')}>My Bookings</Box>
+        <Box className="text-white cursor-pointer" onClick={handleLogout}>Logout</Box>
+        
     
-        <MenuItem setActive={setActive} active={active} item="Services">
-          <div className="flex flex-col space-y-4 text-sm">
-            <HoveredLink href="/web-dev">Web Development</HoveredLink>
-            <HoveredLink href="/interface-design">Interface Design</HoveredLink>
-            <HoveredLink href="/seo">Search Engine Optimization</HoveredLink>
-            <HoveredLink href="/branding">Branding</HoveredLink>
-          </div>
-        </MenuItem>
-        <MenuItem setActive={setActive} active={active} item="Products">
-          <div className="  text-sm grid grid-cols-2 gap-10 p-4">
-            <ProductItem
-              title="Algochurn"
-              href="https://algochurn.com"
-              src="https://assets.aceternity.com/demos/algochurn.webp"
-              description="Prepare for tech interviews like never before."
-            />
-            <ProductItem
-              title="Tailwind Master Kit"
-              href="https://tailwindmasterkit.com"
-              src="https://assets.aceternity.com/demos/tailwindmasterkit.webp"
-              description="Production ready Tailwind css components for your next project"
-            />
-            <ProductItem
-              title="Moonbeam"
-              href="https://gomoonbeam.com"
-              src="https://assets.aceternity.com/demos/Screenshot+2024-02-21+at+11.51.31%E2%80%AFPM.png"
-              description="Never write from scratch again. Go from idea to blog in minutes."
-            />
-            <ProductItem
-              title="Rogue"
-              href="https://userogue.com"
-              src="https://assets.aceternity.com/demos/Screenshot+2024-02-21+at+11.47.07%E2%80%AFPM.png"
-              description="Respond to government RFPs, RFIs and RFQs 10x faster using AI"
-            />
-          </div>
-        </MenuItem>
+        
+        
         <MenuItem setActive={setActive} active={active} item="Contact">
           <div className="flex flex-col space-y-4 text-sm">
             <HoveredLink href='/about-us'>About Us</HoveredLink>
