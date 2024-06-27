@@ -147,7 +147,7 @@ const TopDestination = () => {
         //     </div>
         // </section>
         <div>
-            hi
+          
         </div>
     );
 };

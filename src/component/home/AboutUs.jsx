@@ -1,6 +1,7 @@
 import React from 'react'
 import {GlobeDemo} from '../ui/Earth'
 import {LampDemo} from '../../test'
+import {TypewriterEffectSmoothDemo} from '../../test'
 import { 
     Box,
     Card ,
@@ -21,6 +22,7 @@ function AboutUs() {
     <Box ></Box>
     <GlobeDemo/>
     <LampDemo/>
+    <TypewriterEffectSmoothDemo/>
 
     </>
   )

@@ -8,6 +8,7 @@ import TopDestination from '../organs/TopDestination'
 import BookingSteps from '../organs/BookingSteps'
 import Testimonials from '../organs/Testimonials'
 import NewsLetter from '../organs/NewsLetter'
+import {InfiniteMovingCardsDemo} from '../../test'
 function Home() {
   const { isAuthorized }=useContext(Context)
   if(!isAuthorized){
@@ -21,7 +22,8 @@ function Home() {
       <Services/>
       <TopDestination/>
       <BookingSteps/>
-      <Testimonials/>
+      {/* <Testimonials/> */}
+      <InfiniteMovingCardsDemo/>
       <NewsLetter/>
 
     </>

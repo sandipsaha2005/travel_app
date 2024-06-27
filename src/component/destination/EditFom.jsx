@@ -30,7 +30,7 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs from "dayjs";
 
-function CreateDestination() {
+function EditDestination() {
   const { isAuthorized, user } = useContext(Context);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
@@ -56,18 +56,35 @@ function CreateDestination() {
     peopleErr: false,
     peopleErrMsg: "",
   });
+  const [bookingId,setBookingId]=useState();
 
   const getData = async () => {
     try {
-      const apiUrl = `${import.meta.env.VITE_API_URL}destination/getPost/${id}`;
+      const apiUrl = `${
+        import.meta.env.VITE_API_URL
+      }user/get-spec-bookings/${id}`;
       const res = await axios.get(apiUrl, { withCredentials: true });
       setPostDetails(res?.data?.post);
+      const postData = res?.data?.posts;
+      console.log(postData);
+      
+      if (postData) {
+        setBookingId(postData?._id)
+        setState((prevState) => ({
+          ...prevState,
+          name: postData.name || "",
+          email: postData.email || "",
+          phone: postData.phone || "",
+          fromDate: postData.fromDate ? dayjs(postData.fromDate) : dayjs(),
+          toDate: postData.toDate ? dayjs(postData.toDate) : dayjs(),
+          people: postData.people || "",
+        }));
+      }
+      
     } catch (error) {
       console.error("API call error:", error);
     }
   };
-
-
 
   const handleChange = (event) => {
     setState((prevState) => ({
@@ -86,51 +103,24 @@ function CreateDestination() {
       [`${name}ErrMsg`]: "",
     }));
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    try {
-      console.log("before valid");
-      createBookingValidate.parse(state);
-      console.log("after valid");
-    } catch (error) {
-      if (error instanceof ZodError) {
-        const errors = error.issues;
-        console.log(errors);
 
-        errors.length > 0 &&
-          errors.forEach((error) => {
-            if (error.message !== "") {
-              const field = error.path[0] + "Err";
-
-              setState((prevState) => ({
-                ...prevState,
-                [field]: true,
-                [`${field}Msg`]: error.message,
-              }));
-            }
-          });
-      }
-      return;
-    }
 
     try {
       setLoading(true);
       console.log(user);
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}user/create-booking`,
+        `${import.meta.env.VITE_API_URL}user/update-bookings/${bookingId}`,
         {
-          name:state.name,
-          email:state.email,
-          phone:state.phone,
-          fromDate:state.fromDate,
-          toDate:state.toDate,
-          people:state.people,
-          destinationId:postDetails?._id,
-          destinationName:postDetails?.title, 
-          destinationLocation:postDetails?.city,
-          userId:user?._id
+          name: state.name,
+          email: state.email,
+          phone: state.phone,
+          fromDate: state.fromDate,
+          toDate: state.toDate,
+          people: state.people,
+          
         },
         {
           withCredentials: true,
@@ -143,7 +133,7 @@ function CreateDestination() {
       if (res.status === 200) {
         setLoading(false);
         toast.success(res?.data?.message);
-        navigate(`/bookings/${user?._id}`)
+        navigate(`/bookings/${user?._id}`);
       }
     } catch (error) {
       console.log("something went wrong", error);
@@ -151,6 +141,7 @@ function CreateDestination() {
       setLoading(false);
     }
   };
+  
 
   if (!isAuthorized) {
     return <Navigate to={"/login"} />;
@@ -160,7 +151,9 @@ function CreateDestination() {
     getData();
   }, [id]);
 
-
+  if(!isAuthorized){
+    return <Navigate to={'/login'}/>
+  }
 
   return (
     <Box sx={{ marginTop: 25, display: "flex", justifyContent: "center" }}>
@@ -309,4 +302,4 @@ function CreateDestination() {
   );
 }
 
-export default CreateDestination;
+export default EditDestination;

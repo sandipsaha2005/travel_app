@@ -273,8 +273,8 @@ function Register() {
                     <em>None</em>
                   </MenuItem>
                   
-                  <MenuItem value={'Employer'}>Employer</MenuItem>
-                  <MenuItem value={'Job Seeker'}>Job Seeker</MenuItem>
+                  <MenuItem value={'Employer'}>Admin</MenuItem>
+                  <MenuItem value={'Job Seeker'}>User</MenuItem>
                 </Select>
                 <FormHelperText sx={{color:'red'}}>{state.roleErrMsg}</FormHelperText>
               </FormControl>

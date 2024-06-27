@@ -7,9 +7,12 @@ import {
   useTheme,
   Button,
 } from "@mui/material";
-
+import Avatar from "@mui/material/Avatar";
+import BookIcon from "@mui/icons-material/Book";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+import HolidayVillageIcon from "@mui/icons-material/HolidayVillage";
 import axios from "axios";
-import React, { useEffect, useState ,useContext} from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import ImageList from "@mui/material/ImageList";
 import ImageListItem from "@mui/material/ImageListItem";
@@ -19,6 +22,7 @@ import StarBorderIcon from "@mui/icons-material/StarBorder";
 import Map from "../organs/Map";
 import { ThreeDCardDemo } from "../../test";
 import { Context } from "../../main";
+
 
 function srcset(image, width, height, rows = 1, cols = 1) {
   return {
@@ -31,10 +35,10 @@ function srcset(image, width, height, rows = 1, cols = 1) {
 
 function SingleCard() {
   const { id } = useParams();
-  const {user}=useContext(Context)
+  const { user } = useContext(Context);
   const [state, setState] = useState({});
   const theme = useTheme();
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   let img;
   const getData = async () => {
@@ -56,7 +60,7 @@ function SingleCard() {
   return (
     <Box
       sx={{
-        marginTop: 15,
+        marginTop: 20,
         height: "100%",
       }}
     >
@@ -87,7 +91,7 @@ function SingleCard() {
             </Grid>
             {!isMobile && (
               <Grid item xs={8}>
-                <ImageList
+                {/* <ImageList
                   sx={{ width: "100%", height: "100%" }}
                   cols={2}
                   rowHeight={200}
@@ -95,7 +99,25 @@ function SingleCard() {
                 >
                   {state?.images?.slice(2, 6).map((image, index) => (
                     <ImageListItem key={index + 1} sx={{ padding: 2 }}>
-                      <img src={image.url} loading="lazy" height="200px" />
+                      <img src={image.url} loading="lazy" height="200px" style={{marginTop:'5px',marginBottom:'5px'}}/>
+                    </ImageListItem>
+                  ))}
+                </ImageList> */}
+                <ImageList
+                  sx={{ width: "100%", height: "100%" }}
+                  cols={2}
+                  rowHeight={200}
+                  
+                >
+                  {state?.images?.slice(2, 6).map((item) => (
+                    <ImageListItem key={item.img}>
+                      <img
+                        srcSet={`${item.img}?w=164&h=164&fit=crop&auto=format&dpr=2 2x`}
+                        src={`${item.url}?w=164&h=164&fit=crop&auto=format`}
+                        alt={item.title}
+                        loading="lazy"
+                        height="200px"  
+                      />
                     </ImageListItem>
                   ))}
                 </ImageList>
@@ -105,134 +127,135 @@ function SingleCard() {
         </Card>
       </Box>
 
-      <Card sx={{width:'100%',padding:'5%'}}>
+      <Card sx={{ width: "100%", padding: "4%" }}>
         <Grid container spacing={2}>
           <Grid item xs={8}>
             <Card
               sx={{
-                // width: "90vw",
                 paddingTop: 1,
                 paddingBottom: 2,
                 paddingLeft: 2,
+                borderBottom: "2px solid blue",
               }}
             >
               <Typography sx={{ fontSize: 19, fontWeight: 600 }}>
+                {state?.country}
+              </Typography>
+              <Typography sx={{ fontSize: 19, fontWeight: 600 }}>
                 {state?.city}
-                {" , "}
-                {state?.title}
               </Typography>
             </Card>
           </Grid>
-          {user?.role == 'Job Seeker' && (
+          {user?.role == "Job Seeker" && (
             <Grid item xs={4}>
-            <Card
-              sx={{
-                // width: "90vw",
-                paddingTop: 1,
-                paddingBottom: 2,
-                paddingLeft: 2,
-              }}
-            >
-              <Button variant="outlined" onClick={()=>navigate(`/book/${state?._id}`)}>Book the Place</Button>
-            </Card>
-          </Grid>
+              <Card
+                sx={{
+                  paddingTop: 2,
+                  paddingBottom: 3.5,
+                  paddingLeft: 2,
+                  display: "flex",
+                  justifyContent: "center",
+                  borderBottom: "2px solid blue",
+                }}
+              >
+                <Button
+                  variant="outlined"
+                  onClick={() => navigate(`/book/${state?._id}`)}
+                >
+                  <BookIcon />
+                  Book the Place
+                </Button>
+              </Card>
+            </Grid>
           )}
-          
         </Grid>
-      
-      {/* <Box
-        sx={{
-          marginTop: 3,
-          display: "flex",
-          justifyContent: "center",
-          // flexDirection:'column'
-        }}
-      >
+
         <Box
           sx={{
-            width: "90vw",
-
-            paddingBottom: 2,
-            paddingLeft: 1,
-            display: "flex",
-            flexDirection: "column",
-            gap: 2,
+            marginTop: 3,
           }}
         >
-          <Card sx={{ padding: 1.5 }}>
-            <Typography>{state?.todo1}</Typography>
-          </Card>
-          <Card sx={{ padding: 1.5 }}>
-            <Typography>{state?.todo2}</Typography>
-          </Card>
-          <Card sx={{ padding: 1.5 }}>
-            <Typography>{state?.todo3}</Typography>
-          </Card>
-          <Card sx={{ padding: 1.5 }}>
-            <Typography>{state?.todo4}</Typography>
+          <Typography sx={{ marginBottom: 2, fontSize: 17, fontWeight: 500 }}>
+            What you will do in {state?.city} <ArrowForwardIcon />
+          </Typography>
+          <Box
+            sx={{
+              width: "90vw",
+              paddingBottom: 2,
+              paddingLeft: 1,
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+            }}
+          >
+            <Card sx={{ padding: 1.5, borderBottom: "1px solid red" }}>
+              <Typography>
+                {" "}
+                <HolidayVillageIcon /> {state?.todo1}
+              </Typography>
+            </Card>
+            <Card sx={{ padding: 1.5, borderBottom: "1px solid red" }}>
+              <Typography>
+                <HolidayVillageIcon /> {state?.todo2}
+              </Typography>
+            </Card>
+            <Card sx={{ padding: 1.5, borderBottom: "1px solid red" }}>
+              <Typography>
+                <HolidayVillageIcon /> {state?.todo3}
+              </Typography>
+            </Card>
+            <Card sx={{ padding: 1.5, borderBottom: "1px solid red" }}>
+              <Typography>
+                <HolidayVillageIcon /> {state?.todo4}
+              </Typography>
+            </Card>
+          </Box>
+        </Box>
+        <Box
+          sx={{
+            marginTop: 5,
+          }}
+        >
+          <Typography sx={{ marginBottom: 2, fontSize: 17, fontWeight: 500 }}>
+            About this place <ArrowForwardIcon />
+          </Typography>
+          <Card
+            sx={{ width: "90vw", padding: 3, borderBottom: "2px solid green" }}
+          >
+            <Typography>{state?.description}</Typography>
           </Card>
         </Box>
-      </Box>
-      <Box
-        sx={{
-          marginTop: 5,
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Card sx={{ width: "90vw" }}>
-          <Typography>About this place</Typography>
-          <Typography>{state?.description}</Typography>
-        </Card>
-      </Box>
 
-      <Box
-        sx={{
-          marginTop: 5,
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Card sx={{ width: "90vw" }}>
-          <Typography>About this place</Typography>
-          <Typography>{state?.description}</Typography>
-        </Card>
-      </Box>
-      <Box
-        sx={{
-          marginTop: 5,
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <Box sx={{ width: "90vw" }}>
-          <Typography sx={{ fontSize: 18, fontWeight: 600, marginBottom: 1 }}>
-            Meet your Host - {state.guideName}
-          </Typography>
-          <Card sx={{ height: "50%", minHeight: "200px", width: "40%" }}>
+        <Box
+          sx={{
+            marginTop: 5,
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          <Box sx={{ width: "90vw" }}>
+            <Typography sx={{ fontSize: 17, fontWeight: 500, marginBottom: 1 }}>
+              Meet your Host - {state.guideName}
+            </Typography>
+            {/* <Card sx={{ height: "40%", minHeight: "100px", width: "20%" }}> */}
             {state?.images?.[0]?.url ? (
-              <img
-                src={state.images[0].url}
-                alt="Guide Image"
-                style={{
-                  height: "100%",
-                  width: "100%",
-                  // objectFit: "cover",
-                }}
+              <Avatar
+                alt="Guide Name"
+                src={state?.images?.[0]?.url}
+                sx={{ width: 200, height: 200, border: "1px solid red" }}
               />
             ) : (
               <p>No image available</p>
             )}
-          </Card>
+            {/* </Card> */}
+          </Box>
         </Box>
-      </Box> */}
 
-
-      {state.lat && state.lng && (
-        <Card sx={{ padding: 1, display: "flex", justifyContent: "right" }}>
-          <Map lat={state.lat} lng={state.lng} />
-         </Card> 
-      )}
+        {state.lat && state.lng && (
+          <Card sx={{ padding: 1, display: "flex", justifyContent: "right" }}>
+            <Map lat={state.lat} lng={state.lng} />
+          </Card>
+        )}
       </Card>
     </Box>
   );
