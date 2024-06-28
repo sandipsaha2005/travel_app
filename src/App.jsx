@@ -15,6 +15,7 @@ import SingleCard from './component/destination/SingleCard'
 import BookForm from './component/destination/BookForm'
 import AllBookings from './component/destination/Bookings'
 import EditDestination from './component/destination/EditFom'
+import GetAllBookings from './component/destination/AllBookings'
 import axios from 'axios'
 import { Toaster } from 'react-hot-toast'
 import { ToastContainer, toast } from 'react-toastify';
@@ -50,6 +51,7 @@ function App() {
         <Route path='/destinations' element={<Destination/>}/>
         <Route path='/book/:id' element={<BookForm/>}/>
         <Route path='/bookings/:id' element={<AllBookings/>}/>
+        <Route path='/all-bookings' element={<GetAllBookings/>}/>
         <Route path='/edit/:id' element={<EditDestination/>}/>
         <Route path='/creat-post' element={<CreateDestination/>}/>
         <Route path='/location/:id' element={<SingleCard/>}/>

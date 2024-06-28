@@ -104,8 +104,17 @@ function Register() {
       return;
     }
 
+
     try {
       const { name, phone, email, role, password } = state;
+      if(validateEmail(email)==false){
+        toast.error("Enter a valid Email");
+        return;
+      }
+      if(validatePhone(phone)==false){
+        toast.error("Enter a valid Phone Number");
+        return;
+      }
       const { data } = await axios.post(
         `${import.meta.env.VITE_API_URL}user/register`,
         { name, phone, email, role, password },
@@ -139,6 +148,20 @@ function Register() {
        [`${_event.target.name}Err`]: false,
        [`${_event.target.name}ErrMsg`]: '',
      }));
+  };
+  const validateEmail = (email) => {
+    // Regex pattern for validating email addresses
+    
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+  const validatePhone = (phone) => {
+    if(phone.length < 10){
+      return false;
+    }
+    // Regex pattern for validating phone numbers (basic example, adjust as needed)
+    const regex = /^\+?[1-9]\d{1,14}$/;
+    return regex.test(phone);
   };
 
   return (

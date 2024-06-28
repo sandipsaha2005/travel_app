@@ -114,6 +114,19 @@ function CreateDestination() {
       }
       return;
     }
+    let resEmail=validateEmail(state?.email)
+    if(resEmail==false){
+      toast.error("Enter a valid Email")
+      return;
+    }
+
+    if(validatePhone(state.phone)==false){
+      toast.error("Enter a valid Phone Number")
+      return;
+    }
+
+    
+
 
     try {
       setLoading(true);
@@ -150,6 +163,21 @@ function CreateDestination() {
       toast.error("Something went wrong");
       setLoading(false);
     }
+  };
+
+  const validateEmail = (email) => {
+    // Regex pattern for validating email addresses
+    
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
+  const validatePhone = (phone) => {
+    if(phone.length < 10){
+      return false;
+    }
+    // Regex pattern for validating phone numbers (basic example, adjust as needed)
+    const regex = /^\+?[1-9]\d{1,14}$/;
+    return regex.test(phone);
   };
 
   if (!isAuthorized) {

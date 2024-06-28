@@ -248,11 +248,12 @@ function CreateDestination() {
 
 
   return (
-    <Box sx={{ marginTop: 15, display: "flex", justifyContent: "center" }}>
+    <Box sx={{ marginTop: 20, display: "flex", justifyContent: "center" }}>
       <form onSubmit={handleSubmit}>
         <Title
           title={"Create Destination"}
-          muiStyle={{ textAlign: "center" }}
+          muiStyle={{ textAlign: "center", }}
+          varient='h2'
         />
         <Card>
           <Card>
@@ -642,7 +643,7 @@ function CreateDestination() {
                 <LoadingButton
                   //   disabled={formik.isSubmitting}
                   fullWidth
-                  sx={{ maxWidth: "150px" }}
+                  sx={{ maxWidth: "150px",minHeight:'40px',minWidth:'150px' }}
                   size="small"
                   type="submit"
                   variant="contained"

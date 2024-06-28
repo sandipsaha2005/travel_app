@@ -103,21 +103,26 @@ export function Navbar({ className }) {
         {user?.role=='Employer' && (
           <Box className="text-white cursor-pointer" onClick={()=>navigate('/creat-post')}>Create Destination</Box>
         )}
+        {user?.role=='Employer' 
+        ?
+        <Box className="text-white cursor-pointer" onClick={()=>navigate(`/all-bookings`)}>Bookings</Box>
+        :
+        <Box className="text-white cursor-pointer" onClick={()=>navigate(`/bookings/${user?._id}`)}>My Bookings</Box>  
+      }
         
-        <Box className="text-white cursor-pointer" onClick={()=>navigate(`/bookings/${user?._id}`)}>My Bookings</Box>
         <Box className="text-white cursor-pointer" onClick={handleLogout}>Logout</Box>
         
     
         
         
-        <MenuItem setActive={setActive} active={active} item="Contact">
+        {/* <MenuItem setActive={setActive} active={active} item="Contact">
           <div className="flex flex-col space-y-4 text-sm">
             <HoveredLink href='/about-us'>About Us</HoveredLink>
             <HoveredLink href="/individual">Individual</HoveredLink>
             <HoveredLink href="/team">Team</HoveredLink>
             <HoveredLink href="/enterprise">Enterprise</HoveredLink>
           </div>
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
     </div>
   );
@@ -207,15 +212,15 @@ export function TypewriterEffectSmoothDemo() {
     },
     
     {
-      text: 'Traveller.',
+      text: 'Jadoo.',
       className: 'text-blue-500 dark:text-blue-500',
     },
   ];
 
   return (
     <div className="flex flex-col items-center justify-center h-[40rem]">
-      <p className="text-neutral-600 dark:text-neutral-900 text-xs sm:text-base">
-        The road to freedom starts from here
+      <p className="text-neutral-600 dark:text-neutral-900 text-xs sm:text-base w-auto">
+      Jadoo is an innovative platform designed to make tourism easier and more enjoyable. Our website provides comprehensive information about tourist destinations, including detailed guides, local attractions, and cultural insights. Users can conveniently book transportation, accommodation, and tours all in one place, ensuring a seamless travel experience. With a user-friendly interface and integrated services, Jadoo aims to be the go-to resource for travelers seeking hassle-free planning and memorable adventures.
       </p>
       <TypewriterEffectSmooth words={words} />
       {/* <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4">
