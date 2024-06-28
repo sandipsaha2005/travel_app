@@ -1,42 +1,43 @@
-
-import React,{useState, useEffect,   Suspense ,useContext } from "react";
+import React, { useState, useEffect, Suspense, useContext } from "react";
 import { CardBody, CardContainer, CardItem } from "./component/ui/Card";
-import { Navigate, useNavigate } from 'react-router-dom'
+import { Navigate, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import { Context } from "./main";
-import { LampContainer } from './component/ui/slidingText'
-import toast from 'react-hot-toast'
-import { InfiniteMovingCards } from './component/ui/InfiMoving'
-import { WavyBackground } from "./component/ui/WavyBack"
+import { LampContainer } from "./component/ui/slidingText";
+import toast from "react-hot-toast";
+import { InfiniteMovingCards } from "./component/ui/InfiMoving";
+import { WavyBackground } from "./component/ui/WavyBack";
 
-import axios from 'axios'
-import { 
+import axios from "axios";
+import {
   Box,
-  Card ,
-  CardHeader ,
-  CardMedia ,
-  CardContent ,
-  CardActions ,
-  Collapse ,
-  Avatar ,
+  Card,
+  CardHeader,
+  CardMedia,
+  CardContent,
+  CardActions,
+  Collapse,
+  Avatar,
   IconButton,
-  Typography ,
- } from '@mui/material'
-import './custom.css'
+  Typography,
+} from "@mui/material";
+import "./custom.css";
 
-import {cn} from './utils/cn'
-import { HoveredLink, Menu, MenuItem, ProductItem } from "./component/ui/Navbar"
-
+import { cn } from "./utils/cn";
+import {
+  HoveredLink,
+  Menu,
+  MenuItem,
+  ProductItem,
+} from "./component/ui/Navbar";
 
 export function ThreeDCardDemo(data) {
-  const navigate=useNavigate();
+  const navigate = useNavigate();
   console.log(data);
-  const handleNavigate=()=>{
-    console.log(
-      "nav"
-    );
-    navigate(`/location/${data?.data?._id}`)
-  }
+  const handleNavigate = () => {
+    console.log("nav");
+    navigate(`/location/${data?.data?._id}`);
+  };
   return (
     <CardContainer className="inter-var">
       <CardBody className="bg-gray-50 relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-gray   w-auto sm:w-[30rem] h-auto  p-6 border gradient-border rounded-lg">
@@ -53,7 +54,7 @@ export function ThreeDCardDemo(data) {
         >
           {data?.data?.category}
         </CardItem>
-        <CardItem translateZ="100" className="w-full mt-4 cursor-pointer" >
+        <CardItem translateZ="100" className="w-full mt-4 cursor-pointer">
           <img
             src={data?.data?.images[1]?.url}
             height={1000}
@@ -63,11 +64,15 @@ export function ThreeDCardDemo(data) {
             onClick={handleNavigate}
           />
         </CardItem>
-        <Box marginTop={3}>
-        <Typography>{data?.data?.city}</Typography>
-        <Typography>{data?.data?.country}</Typography>
+        <Box marginTop={3} sx={{ display: "flex", justifyContent: "space-between" }}>
+          <Box>
+            <Typography>{data?.data?.city}</Typography>
+            <Typography>{data?.data?.country}</Typography>
+          </Box>
+          <Box>
+            <Typography>Price Range: {data?.data?.priceRange}</Typography>
+          </Box>
         </Box>
-
       </CardBody>
     </CardContainer>
   );
@@ -75,46 +80,76 @@ export function ThreeDCardDemo(data) {
 
 export function Navbar({ className }) {
   const [active, setActive] = useState(null);
-  const navigate=useNavigate();
-  const {isAuthorized,setIsAuthorized,user}= useContext(Context)
-  const handleLogout= async()=>{
+  const navigate = useNavigate();
+  const { isAuthorized, setIsAuthorized, user } = useContext(Context);
+  const handleLogout = async () => {
     try {
-        const res=await axios.get(`${import.meta.env.VITE_API_URL}user/logout`,{withCredentials:true})
-        console.log('Logout response:', res)
-        toast.success(res?.data?.message)
-        setIsAuthorized(false)
-        navigate('/login')
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}user/logout`,
+        { withCredentials: true }
+      );
+      console.log("Logout response:", res);
+      toast.success(res?.data?.message);
+      setIsAuthorized(false);
+      navigate("/login");
     } catch (error) {
-        console.log(error);
-        toast.error(" something went wrong");
-        
-        setIsAuthorized(true)
+      console.log(error);
+      toast.error(" something went wrong");
+
+      setIsAuthorized(true);
     }
-    
-}
+  };
   return (
     <div
       className={cn("fixed top-10 inset-x-0 max-w-2xl mx-auto z-50", className)}
     >
-      <Menu setActive={setActive} >
-        <Box className="text-white cursor-pointer" onClick={()=>navigate('/')}>Home</Box>
-        <Box className="text-white cursor-pointer" onClick={()=>navigate('/destinations')}>Destinatons</Box>
-        <Box className="text-white cursor-pointer" onClick={()=>navigate('/about-us')}>About Us</Box>
-        {user?.role=='Employer' && (
-          <Box className="text-white cursor-pointer" onClick={()=>navigate('/creat-post')}>Create Destination</Box>
+      <Menu setActive={setActive}>
+        <Box
+          className="text-white cursor-pointer"
+          onClick={() => navigate("/")}
+        >
+          Home
+        </Box>
+        <Box
+          className="text-white cursor-pointer"
+          onClick={() => navigate("/destinations")}
+        >
+          Destinatons
+        </Box>
+        <Box
+          className="text-white cursor-pointer"
+          onClick={() => navigate("/about-us")}
+        >
+          About Us
+        </Box>
+        {user?.role == "Employer" && (
+          <Box
+            className="text-white cursor-pointer"
+            onClick={() => navigate("/creat-post")}
+          >
+            Create Destination
+          </Box>
         )}
-        {user?.role=='Employer' 
-        ?
-        <Box className="text-white cursor-pointer" onClick={()=>navigate(`/all-bookings`)}>Bookings</Box>
-        :
-        <Box className="text-white cursor-pointer" onClick={()=>navigate(`/bookings/${user?._id}`)}>My Bookings</Box>  
-      }
-        
-        <Box className="text-white cursor-pointer" onClick={handleLogout}>Logout</Box>
-        
-    
-        
-        
+        {user?.role == "Employer" ? (
+          <Box
+            className="text-white cursor-pointer"
+            onClick={() => navigate(`/all-bookings`)}
+          >
+            Bookings
+          </Box>
+        ) : (
+          <Box
+            className="text-white cursor-pointer"
+            onClick={() => navigate(`/bookings/${user?._id}`)}
+          >
+            My Bookings
+          </Box>
+        )}
+
+        <Box className="text-white cursor-pointer" onClick={handleLogout}>
+          Logout
+        </Box>
+
         {/* <MenuItem setActive={setActive} active={active} item="Contact">
           <div className="flex flex-col space-y-4 text-sm">
             <HoveredLink href='/about-us'>About Us</HoveredLink>
@@ -148,11 +183,7 @@ export function LampDemo() {
 }
 
 export function WavyBackgroundDemo() {
-  return (
-    <WavyBackground className="max-w-4xl mx-auto pb-40">
-      
-    </WavyBackground>
-  );
+  return <WavyBackground className="max-w-4xl mx-auto pb-40"></WavyBackground>;
 }
 
 export function InfiniteMovingCardsDemo() {
@@ -189,7 +220,6 @@ export function InfiniteMovingCardsDemo() {
   ];
   return (
     <div className="h-[40rem] rounded-md flex flex-col antialiased bg-white dark:bg-black dark:bg-grid-white/[0.05] items-center justify-center relative overflow-hidden">
-      
       <InfiniteMovingCards
         items={testimonials}
         direction="right"
@@ -199,43 +229,36 @@ export function InfiniteMovingCardsDemo() {
   );
 }
 
-
-import { TypewriterEffectSmooth } from './component/ui/StyleText';
+import { TypewriterEffectSmooth } from "./component/ui/StyleText";
 
 export function TypewriterEffectSmoothDemo() {
   const words = [
     {
-      text: 'Travel',
+      text: "Travel",
     },
     {
-      text: 'With',
+      text: "With",
     },
-    
+
     {
-      text: 'Jadoo.',
-      className: 'text-blue-500 dark:text-blue-500',
+      text: "Jadoo.",
+      className: "text-blue-500 dark:text-blue-500",
     },
   ];
 
   return (
     <div className="flex flex-col items-center justify-center h-[40rem]">
       <p className="text-neutral-600 dark:text-neutral-900 text-xs sm:text-base w-auto">
-      Jadoo is an innovative platform designed to make tourism easier and more enjoyable. Our website provides comprehensive information about tourist destinations, including detailed guides, local attractions, and cultural insights. Users can conveniently book transportation, accommodation, and tours all in one place, ensuring a seamless travel experience. With a user-friendly interface and integrated services, Jadoo aims to be the go-to resource for travelers seeking hassle-free planning and memorable adventures.
+        Jadoo is an innovative platform designed to make tourism easier and more
+        enjoyable. Our website provides comprehensive information about tourist
+        destinations, including detailed guides, local attractions, and cultural
+        insights. Users can conveniently book transportation, accommodation, and
+        tours all in one place, ensuring a seamless travel experience. With a
+        user-friendly interface and integrated services, Jadoo aims to be the
+        go-to resource for travelers seeking hassle-free planning and memorable
+        adventures.
       </p>
       <TypewriterEffectSmooth words={words} />
-      {/* <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 space-x-0 md:space-x-4">
-        <button className="w-40 h-10 rounded-xl bg-black border dark:border-white border-transparent text-white text-sm">
-          Join now
-        </button>
-        <button className="w-40 h-10 rounded-xl bg-white text-black border border-black text-sm">
-          Signup
-        </button>
-      </div> */}
     </div>
   );
 }
-
-
-
-
-

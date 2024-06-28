@@ -41,10 +41,14 @@ function AllBookings() {
 
   }, []);
 
+  console.log(bookings);
+
 
   return (
  
     <WavyBackground className="max-w-4xl mx-auto pb-40 overflow-auto">
+      {bookings?.length>0 
+      ?
       <div className="flex gap-4 bg-transparent flex-col mt-44">
         {bookings?.map((elem, index) => (
           <Card sx={{ maxWidth: "100%",backGrouondColor:'gray',borderBottom:'3px solid red',borderLeft:'3px solid red' }}>
@@ -58,26 +62,25 @@ function AllBookings() {
                 <Typography>Your Phone: {elem?.phone}</Typography>
                 <Typography>Tour Starts: {elem?.fromDate}</Typography>
                 <Typography>Tour Ends: {elem?.toDate}</Typography>
-                {/* <Typography variant="body2" color="text.secondary">
-                  Lizards are a widespread group of squamate reptiles, with over
-                  6,000 species, ranging across all continents except Antarctica
-                  destinationId : "667575178d2d906acc6a1701" destinationLocation
-                  : "Highland Council" destinationName : "Shreks Swamp" email :
-                  "thisis@gmail.com" fromDate : "Wed, 26 Jun 2024 18:05:35 GMT"
-                  name : "Sandip Saha" people : "5" phone : "09800960950" toDate
-                  : "Thu, 27 Jun 2024 18:05:35 GMT" __v : 0 _id :
-                  "667c587a294148824abcc4c8"
-                </Typography> */}
+                <Typography>Your Status :{elem?.approved==false ? <p style={{color:'red',paddingLeft:3}}>'In progress'</p>  : 'Your request is approved, Our Guide will contact soon'}</Typography>
+                
                 
               </CardContent>
               
             </CardActionArea>
+
             <Box sx={{display:'flex',justifyContent:'end',padding:2}}>
-            <Button variant="outlined" onClick={()=>navigate(`/edit/${elem?._id}`)}>Edit</Button>
+            <Button variant="outlined" disabled={!elem || elem.approved} onClick={() => navigate(`/edit/${elem?._id}`)}>
+  {elem && elem.approved ? 'Approved' : 'Edit'}
+</Button>
             </Box>
           </Card>
         ))}
         </div>
+      :
+      <div style={{fontWeight:'600',fontSize:18,color:'white'}} >You don't have any Bookings</div>
+      }
+      
       
     </WavyBackground>
   );

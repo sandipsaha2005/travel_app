@@ -125,13 +125,12 @@ function Register() {
           withCredentials: true,
         }
       );
-      console.log(data);
       toast.success(data.message);
       setIsAuthorized(true);
     } catch (error) {
-      console.log(data);
-      console.error(error?.response);
-      toast.error("Something is wrong");
+     
+      console.log(error?.response?.data?.message);
+      toast.error(error?.response?.data?.message);
     }
 
   };

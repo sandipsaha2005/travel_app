@@ -14,6 +14,7 @@ import {
   Typography,
   Popover,
 } from "@mui/material";
+// import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import Title from "../organs/title";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { styled } from "@mui/material/styles";
@@ -67,8 +68,6 @@ function CreateDestination() {
     }
   };
 
-
-
   const handleChange = (event) => {
     setState((prevState) => ({
       ...prevState,
@@ -114,36 +113,34 @@ function CreateDestination() {
       }
       return;
     }
-    let resEmail=validateEmail(state?.email)
-    if(resEmail==false){
-      toast.error("Enter a valid Email")
+    let resEmail = validateEmail(state?.email);
+    if (resEmail == false) {
+      toast.error("Enter a valid Email");
       return;
     }
 
-    if(validatePhone(state.phone)==false){
-      toast.error("Enter a valid Phone Number")
+    if (validatePhone(state.phone) == false) {
+      toast.error("Enter a valid Phone Number");
       return;
     }
-
-    
-
 
     try {
       setLoading(true);
-      console.log(user);
+
       const res = await axios.post(
         `${import.meta.env.VITE_API_URL}user/create-booking`,
         {
-          name:state.name,
-          email:state.email,
-          phone:state.phone,
-          fromDate:state.fromDate,
-          toDate:state.toDate,
-          people:state.people,
-          destinationId:postDetails?._id,
-          destinationName:postDetails?.title, 
-          destinationLocation:postDetails?.city,
-          userId:user?._id
+          name: state.name,
+          email: state.email,
+          phone: state.phone,
+          fromDate: state.fromDate,
+          toDate: state.toDate,
+          people: state.people,
+          destinationId: postDetails?._id,
+          destinationName: postDetails?.title,
+          destinationLocation: postDetails?.city,
+          userId: user?._id,
+          approved: false,
         },
         {
           withCredentials: true,
@@ -156,23 +153,23 @@ function CreateDestination() {
       if (res.status === 200) {
         setLoading(false);
         toast.success(res?.data?.message);
-        navigate(`/bookings/${user?._id}`)
+        navigate(`/bookings/${user?._id}`);
       }
     } catch (error) {
       console.log("something went wrong", error);
-      toast.error("Something went wrong");
+      toast.error(error?.response?.data?.message);
       setLoading(false);
     }
   };
 
   const validateEmail = (email) => {
     // Regex pattern for validating email addresses
-    
+
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return regex.test(email);
   };
   const validatePhone = (phone) => {
-    if(phone.length < 10){
+    if (phone.length < 10) {
       return false;
     }
     // Regex pattern for validating phone numbers (basic example, adjust as needed)
@@ -184,11 +181,41 @@ function CreateDestination() {
     return <Navigate to={"/login"} />;
   }
 
+  // const handleDateChange = (field, date) => {
+  //   setState((prevState) => ({
+  //     ...prevState,
+  //     [fromDate]: date,
+  //     fromDateErr: false,
+  //     fromDateErrMsg: "",
+  //   }));
+  // };
+
+  const validateDates = () => {
+    const { fromDate, toDate } = state;
+    let fromDateErr = false;
+    let fromDateErrMsg = '';
+    let toDateErr = false;
+    let toDateErrMsg = '';
+
+    if (fromDate && toDate && fromDate > toDate) {
+      fromDateErr = true;
+      fromDateErrMsg = 'Start date should be earlier than end date';
+      toDateErr = true;
+      toDateErrMsg = 'End date should be later than start date';
+    }
+
+    setState((prevState) => ({
+      ...prevState,
+      fromDateErr,
+      fromDateErrMsg,
+      toDateErr,
+      toDateErrMsg,
+    }));
+  };
+
   useEffect(() => {
     getData();
   }, [id]);
-
-
 
   return (
     <Box sx={{ marginTop: 25, display: "flex", justifyContent: "center" }}>
@@ -257,15 +284,32 @@ function CreateDestination() {
                       label="Start Date"
                       value={state.fromDate}
                       onChange={(date) => handleDateChange("fromDate", date)}
+                      // minDate={new Date()}
                       slotProps={{
                         textField: {
                           error: state.fromDateErr,
                           helperText: state.fromDateErrMsg,
+                          format:"DD/MM/YYYY"
                         },
                       }}
                     />
                   </DemoContainer>
                 </LocalizationProvider>
+                {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DatePicker
+                    label="Start Date"
+                    value={state.fromDate}
+                    onChange={(date) => handleDateChange("fromDate", date)}
+                    // minDate={new Date()}
+                    renderInput={(params) => (
+                      <TextField
+                        {...params}
+                        error={state.fromDateErr}
+                        helperText={state.fromDateErrMsg}
+                      />
+                    )}
+                  />
+                </LocalizationProvider> */}
               </Grid>
               <Grid item xs={6}>
                 <FormControl sx={{ minWidth: 200 }}>
@@ -305,6 +349,7 @@ function CreateDestination() {
                         textField: {
                           error: state.toDateErr,
                           helperText: state.toDateErrMsg,
+                          format:"DD/MM/YYYY"
                         },
                       }}
                     />

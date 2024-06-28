@@ -105,7 +105,7 @@ function Register() {
       setIsAuthorized(true);
     } catch (error) {
       console.log(error);
-      toast.error("Something is wrong");
+      toast.error(error?.response?.data?.message);
     }
   };
 

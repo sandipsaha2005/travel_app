@@ -190,7 +190,7 @@ function CreateDestination() {
       }
     } catch (error) {
       console.log("something went wrong", error);
-      toast.error("Smething wen wront")
+      toast.error(error?.response?.data?.message)
       setloading(false)
     }
   };

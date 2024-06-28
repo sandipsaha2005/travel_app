@@ -144,6 +144,9 @@ function SingleCard() {
               <Typography sx={{ fontSize: 19, fontWeight: 600 }}>
                 {state?.city}
               </Typography>
+              <Typography sx={{ fontSize: 19, fontWeight: 600 }}>
+                Price Range :{state?.priceRange}
+              </Typography>
             </Card>
           </Grid>
           {user?.role == "Job Seeker" && (
